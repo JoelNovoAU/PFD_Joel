@@ -20,8 +20,11 @@ header {
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding: 20px;
   margin: 0;
+  background-color: 	#798d4e;
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-style: normal;
+  font-size:0.9em;
 }
 
 .navbar {
@@ -35,39 +38,39 @@ header {
   width: 100%;
 }
 
-
 .navbar-nav {
   gap: 20px;
 }
-@media (min-width: 1500px) {
-  .navbar-nav {
-  margin-left: 30% !important
-}
-}
-@media (min-width: 1000px) {
-  .navbar-nav {
-  margin-left: 12% !important
-}
-}
-@media (min-width: 1400px) {
-  .navbar-nav {
-  margin-left: 30% !important
-}
-}
+
 #enlaces, #enlaces3 {
-  color: white;
+  color: rgb(255, 255, 255);
   font-size: 1.2em;
   text-decoration: none;
-  transition: all 0.2s ease-in-out;
+  position: relative;
+  transition: all 0.3s ease-in-out;
 }
 
-#enlaces:hover {
-  border-bottom: 3px solid rgb(35, 105, 255);
+/* Subrayado dorado */
+#enlaces::after,
+#enlaces3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #f8c467; /* Color fijo */
+  transition: width 0.3s ease-in-out;
 }
 
+#enlaces:hover::after,
+#enlaces3:hover::after {
+  width: 100%;
+}
+
+/* Color especial para #enlaces3 */
 #enlaces3 {
-  font-weight: 700;
-  border-bottom: 3px solid rgb(35, 163, 255);
+  color: #f8c467;
 }
 
 .iconos {
@@ -75,15 +78,46 @@ header {
   display: flex;
   justify-content: flex-end;
   gap: 20px;
-  color: white;
+  color: rgb(255, 255, 255);
 }
+
+.iconos a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Rayita dorada abajo, sin cambiar el color del texto o íconos */
+.iconos a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #f8c467;
+  transition: width 0.3s ease-in-out;
+}
+
+.iconos a:hover::after {
+  width: 100%;
+}
+
+
+/* También puedes hacer que el color del texto se ilumine */
+
+
 
 #heaimg1 {
   width: 30px;
 }
 
 #heaimg3 {
-  width: 160px;
+  width: 210px;
   height: auto;
 }
 
@@ -102,7 +136,7 @@ header {
     text-align: center; 
     background-color: rgba(0, 0, 0, 0.292); 
     position: absolute;
-    top: 70px; 
+    top: 120px; 
     left: 0;
     padding-top: 10px;
     padding-bottom: 10px;
