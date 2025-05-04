@@ -14,18 +14,35 @@ body, html {
 }
 
 #redes {
-  background-color: #2c2c2c; /* Gris oscuro complementario */
-  color: #f8c467; /* Acento dorado ya usado en enlaces */
-  padding: 10px;
+  background-color: #2c2c2c;
+  color: #f8c467;
+  padding: 6px 20px;
   display: flex;
-  gap: 20px;
-  justify-content: flex-end;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: "Special Gothic Expanded One", sans-serif;
+  font-size: 0.95em;
 }
 
-#red{
-  width: 19px;
+.info-contacto {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8c467;
+}
+
+.iconos-redes {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.icono-red {
+  width: 18px;
   height: auto;
 }
+
 
 #imgIndex {
   width: 100%;

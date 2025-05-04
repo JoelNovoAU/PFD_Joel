@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Golf y Minigolf en Madrid</title>
+    <title>Golf y Minigolf cerca de ti</title>
     <meta charset="utf-8" />
     <style>
+      body{
+        margin: 0;
+        padding: 0;
+      }
       #map {
-        height: 500px;
-        width: 100%;
+        height: 100vh;
+        width: 100vw;
       }
     </style>
     <script
@@ -16,7 +20,6 @@
     ></script>
   </head>
   <body>
-    <h3>Golf y Minigolf cerca de ti en Madrid ⛳</h3>
     <div id="map"></div>
 
     <script>
@@ -24,65 +27,75 @@
       let infoWindow;
 
       function initMap() {
-        const madridLocation = { lat: 40.4168, lng: -3.7038 };
+        // Intentar obtener la ubicación del usuario
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              };
 
-        map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 13,
-          center: madridLocation,
-          mapId: "717d7e50cbca8f3",
-        });
-
-        // Crear una ventana de información (InfoWindow)
-        infoWindow = new google.maps.InfoWindow();
-
-        // Marcador de la ubicación en Madrid
-        new google.maps.marker.AdvancedMarkerElement({
-          map,
-          position: madridLocation,
-          title: "Madrid",
-        });
-
-        // Usar la clase PlaceService para realizar la búsqueda
-        const service = new google.maps.places.PlacesService(map);
-
-        const request = {
-          location: madridLocation,
-          radius: 50000, // 50km
-          query: "golf course", // Query para buscar "golf course"
-        };
-
-        service.textSearch(request, (results, status) => {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            results.forEach((place) => {
-              const marker = new google.maps.marker.AdvancedMarkerElement({
-                map,
-                position: place.geometry.location,
-                title: place.name,
+              // Crear el mapa centrado en la ubicación del usuario
+              map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 13,
+                center: userLocation,
+                mapId: "717d7e50cbca8f3",
               });
 
-              // Obtener detalles adicionales para el lugar
-              service.getDetails(
-                {
-                  placeId: place.place_id,
-                },
-                (details, status) => {
-                  if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    const address = details.formatted_address || "Dirección no disponible";
-                    // Evento para mostrar información cuando se hace clic en un marcador
-                    marker.addListener("click", () => {
-                      infoWindow.setContent(
-                        `<h4>${place.name}</h4><p>${address}</p><a href="https://www.google.com/maps?q=${place.geometry.location.lat()},${place.geometry.location.lng()}" target="_blank">Ver en Google Maps</a>`
-                      );
-                      infoWindow.open(map, marker);
+              infoWindow = new google.maps.InfoWindow();
+
+              // Marcador de ubicación del usuario
+              new google.maps.marker.AdvancedMarkerElement({
+                map,
+                position: userLocation,
+                title: "Tú estás aquí",
+              });
+
+              // Buscar campos de golf cerca
+              const service = new google.maps.places.PlacesService(map);
+              const request = {
+                location: userLocation,
+                radius: 50000,
+                query: "golf course",
+              };
+
+              service.textSearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                  results.forEach((place) => {
+                    const marker = new google.maps.marker.AdvancedMarkerElement({
+                      map,
+                      position: place.geometry.location,
+                      title: place.name,
                     });
-                  }
+
+                    service.getDetails(
+                      { placeId: place.place_id },
+                      (details, status) => {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                          const address = details.formatted_address || "Dirección no disponible";
+                          marker.addListener("click", () => {
+                            infoWindow.setContent(
+                              `<h4>${place.name}</h4><p>${address}</p><a href="https://www.google.com/maps?q=${place.geometry.location.lat()},${place.geometry.location.lng()}" target="_blank">Ver en Google Maps</a>`
+                            );
+                            infoWindow.open(map, marker);
+                          });
+                        }
+                      }
+                    );
+                  });
+                } else {
+                  alert("No se encontraron campos de golf cerca de tu ubicación.");
                 }
-              );
-            });
-          } else {
-            alert("No se encontraron campos de golf cerca de Madrid.");
-          }
-        });
+              });
+            },
+            () => {
+              alert("No se pudo obtener tu ubicación.");
+            }
+          );
+        } else {
+          alert("Tu navegador no soporta geolocalización.");
+        }
       }
     </script>
   </body>
