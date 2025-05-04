@@ -11,54 +11,63 @@
     <title>Document</title>
 </head>
 <body>
-<header class="m-0 p-0">
+<div id="redes">
+  <div class="info-contacto">
+    <img src="img/llamar.png" alt="Teléfono" class="icono-red">
+    <span>666 123 456</span>
+  </div>
+  <div class="iconos-redes">
+    <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
+    <img src="img/gorjeo.png" alt="Twitter" class="icono-red">
+    <img src="img/instagram.png" alt="Instagram" class="icono-red">
+  </div>
+</div>
+
+<header>
   <nav class="navbar navbar-expand-md w-100 py-3">
     <div class="container-fluid px-4">
 
-      <!-- LOGO IZQUIERDA -->
-      <a class="navbar-brand" href="index.html">
-        <img id="heaimg3" src="img/logo - copia.png" alt="Logo HardGz" height="60">
+      <a class="navbar-brand m-0" href="index.html">
+        <img class="logo" src="img/logo - copia.png" alt="Logo">
       </a>
 
-      <!-- Botón Collapse -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapseContent" aria-controls="navbarCollapseContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- TODO A LA DERECHA -->
-      <div class="collapse navbar-collapse ms-auto justify-content-end" id="navbarCollapseContent">
+      <div class="collapse navbar-collapse justify-content-end" id="navbarCollapseContent">
+        <ul class="navbar-nav d-flex  flex-md-row align-items-md-center">
 
-        <div class="d-flex flex-column flex-md-row align-items-md-center gap-4">
-          
-          <!-- ENLACES -->
-          <ul class="navbar-nav d-flex gap-5">
-            <li class="nav-item">
-              <a id="enlaces" class="nav-link px-3" href="partida.php">PARTIDA</a>
-            </li>
-            <li class="nav-item">
-              <a id="enlaces3" class="nav-link px-3" href="comunidad.php">COMUNIDAD</a>
-            </li>
-            <li class="nav-item">
-              <a id="enlaces" class="nav-link px-3" href="contacto.php">CONTACTO</a>
-            </li>
-          </ul>
+          <li class="nav-item">
+            <a class="nav-link enlace" href="partida.php">PARTIDA</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace enlace-destacado" href="comunidad.php">COMUNIDAD</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace" href="contacto.php">CONTACTO</a>
+          </li>
 
-          <!-- ICONOS -->
-          <div class="iconos d-flex align-items-center gap-5">
-            <a class="nav-link" href="mapa2.html">
-              <img id="heaimg1" src="img/marcador.png" alt="Localiza tu campo" height="30"> LOCALIZA TU CAMPO
+          <li class="nav-item">
+            <a class="nav-link enlace-icono" href="mapa2.html">
+               <!-- <img src="img/marcador.png" alt="Localiza tu campo">-->
+              LOCALIZA TU CAMPO
             </a>
-            <a class="nav-link" href="login.html">
-              <img id="heaimg1" src="img/reserva.png" alt="reserva pista" height="30"> RESERVA PISTA  
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace-icono" href="reservar.php">
+              <!-- <img src="img/reserva.png" alt="Reserva pista">--> RESERVA PISTA
             </a>
-            <a class="nav-link" href="login.html">
-              <img id="heaimg1" src="img/usuario.png" alt="Usuario" height="30">
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace-icono" href="login.html">
+             <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
             </a>
-          </div>
+          </li>
 
-        </div>
-
+        </ul>
       </div>
+
     </div>
   </nav>
 </header>

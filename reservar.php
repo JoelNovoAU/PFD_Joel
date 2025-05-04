@@ -11,57 +11,205 @@
     <title>Document</title>
 </head>
 <body>
-<header class="m-0 p-0">
+<header>
   <nav class="navbar navbar-expand-md w-100 py-3">
     <div class="container-fluid px-4">
 
-      <!-- LOGO IZQUIERDA -->
-      <a class="navbar-brand" href="index.html">
-        <img id="heaimg3" src="img/logo - copia.png" alt="Logo HardGz" height="60">
+      <a class="navbar-brand m-0" href="index.html">
+        <img class="logo" src="img/logo - copia.png" alt="Logo">
       </a>
 
-      <!-- Botón Collapse -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapseContent" aria-controls="navbarCollapseContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- TODO A LA DERECHA -->
-      <div class="collapse navbar-collapse ms-auto justify-content-end" id="navbarCollapseContent">
+      <div class="collapse navbar-collapse justify-content-end" id="navbarCollapseContent">
+        <ul class="navbar-nav d-flex  flex-md-row align-items-md-center">
 
-        <div class="d-flex flex-column flex-md-row align-items-md-center gap-4">
-          
-          <!-- ENLACES -->
-          <ul class="navbar-nav d-flex gap-5">
-            <li class="nav-item">
-              <a id="enlaces3" class="nav-link px-3" href="partida.php">PARTIDA</a>
-            </li>
-            <li class="nav-item">
-              <a id="enlaces" class="nav-link px-3" href="comunidad.php">COMUNIDAD</a>
-            </li>
-            <li class="nav-item">
-              <a id="enlaces" class="nav-link px-3" href="contacto.php">CONTACTO</a>
-            </li>
-          </ul>
+          <li class="nav-item">
+            <a class="nav-link enlace " href="partida.php">PARTIDA</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace " href="comunidad.php">COMUNIDAD</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace" href="contacto.php">CONTACTO</a>
+          </li>
 
-          <!-- ICONOS -->
-          <div class="iconos d-flex align-items-center gap-5">
-            <a class="nav-link" href="mapa2.html">
-              <img id="heaimg1" src="img/marcador.png" alt="Localiza tu campo" height="30"> LOCALIZA TU CAMPO
+          <li class="nav-item">
+            <a class="nav-link enlace-icono" href="mapa2.html">
+               <!-- <img src="img/marcador.png" alt="Localiza tu campo">-->
+              LOCALIZA TU CAMPO
             </a>
-            <a class="nav-link" href="login.html">
-              <img id="heaimg1"  src="img/reserva.png" alt="reserva pista" height="30"> RESERVA PISTA  
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace-icono enlace-destacado" href="reservar.php">
+              <!-- <img src="img/reserva.png" alt="Reserva pista">--> RESERVA PISTA
             </a>
-            <a class="nav-link" href="login.html">
-              <img id="heaimg1" src="img/usuario.png" alt="Usuario" height="30">
+          </li>
+          <li class="nav-item">
+            <a class="nav-link enlace-icono" href="login.html">
+             <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
             </a>
-          </div>
+          </li>
 
-        </div>
-
+        </ul>
       </div>
+
     </div>
   </nav>
 </header>
+<style>
+  
+    .calendar {
+      width: 320px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+   
+    .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      padding: 10px;
+    }
+    .day-name, .day {
+      padding: 10px;
+    }
+    .day-name {
+      font-weight: bold;
+      background-color: #f0f0f0;
+    }
+    .day {
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .day:hover {
+      background-color: #e0e0e0;
+    }
+    .selected {
+      background-color: #007bff;
+      color: white;
+    }
+    .nav-button {
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: white;
+    }
+    .pistas {
+      width: 320px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+    .pista {
+      padding: 10px;
+      background-color: #dff0d8;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calendar">
+  <div class="header">
+    <button class="nav-button" onclick="changeMonth(-1)">❮</button>
+    <div id="monthYear"></div>
+    <button class="nav-button" onclick="changeMonth(1)">❯</button>
+  </div>
+  <div class="days" id="dayNames"></div>
+  <div class="days" id="days"></div>
+</div>
+
+<div class="pistas" id="pistas">
+  <strong>Selecciona un día para ver pistas disponibles.</strong>
+</div>
+
+<script>
+  const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  const dayNamesContainer = document.getElementById('dayNames');
+  const daysContainer = document.getElementById('days');
+  const monthYear = document.getElementById('monthYear');
+  const pistasContainer = document.getElementById('pistas');
+
+  let currentDate = new Date();
+
+  // Simulación de disponibilidad
+  const pistasData = {
+    // formato: 'YYYY-MM-DD': ['Pista 1', 'Pista 2']
+    '2025-05-05': ['Pista 1', 'Pista 3'],
+    '2025-05-06': ['Pista 2'],
+    '2025-05-07': ['Pista 1', 'Pista 2', 'Pista 3'],
+  };
+
+  function renderCalendar(date) {
+    daysContainer.innerHTML = '';
+    monthYear.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+    const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
+    // Espacios en blanco
+    for (let i = 0; i < firstDay; i++) {
+      daysContainer.innerHTML += `<div></div>`;
+    }
+
+    // Días
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dayDiv = document.createElement('div');
+      dayDiv.classList.add('day');
+      dayDiv.textContent = i;
+      const fullDate = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${i.toString().padStart(2,'0')}`;
+      dayDiv.addEventListener('click', () => {
+        document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+        dayDiv.classList.add('selected');
+        showPistas(fullDate);
+      });
+      daysContainer.appendChild(dayDiv);
+    }
+  }
+
+  function changeMonth(change) {
+    currentDate.setMonth(currentDate.getMonth() + change);
+    renderCalendar(currentDate);
+  }
+
+  function showPistas(dateStr) {
+    const pistas = pistasData[dateStr] || [];
+    if (pistas.length > 0) {
+      pistasContainer.innerHTML = `<strong>Pistas disponibles para el ${dateStr}:</strong>`;
+      pistas.forEach(p => {
+        const div = document.createElement('div');
+        div.classList.add('pista');
+        div.textContent = p;
+        pistasContainer.appendChild(div);
+      });
+    } else {
+      pistasContainer.innerHTML = `<strong>No hay pistas disponibles para el ${dateStr}.</strong>`;
+    }
+  }
+
+  // Inicializar nombres de días
+  dayNames.forEach(name => {
+    const div = document.createElement('div');
+    div.classList.add('day-name');
+    div.textContent = name;
+    dayNamesContainer.appendChild(div);
+  });
+
+  renderCalendar(currentDate);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 </body>
