@@ -46,7 +46,7 @@
             <a class="nav-link enlace " href="comunidad.php">COMUNIDAD</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace" href="contacto.php">CONTACTO</a>
+            <a class="nav-link enlace enlace-destacado" href="contacto.php">CONTACTO</a>
           </li>
 
           <li class="nav-item">
@@ -72,6 +72,25 @@
     </div>
   </nav>
 </header>
+<div id="headercont">
+    <img id="imgcont" src="img/ChatGPT Image 15 may 2025, 00_27_23.png" alt="Campo de golf">
+    <div class="overlay-text">  Contáctanos y haz hoy el mejor approach.</div>
+    <h2>Contáctanos</h2>
+  </div>
+
+  <p class="subcontacto">¿Tienes dudas, problemas al reservar o simplemente comunicarnos? Estamos aquí para ayudarte.</p>
+
+  <form id="formcontacto">
+    <input type="text" name="nombre" placeholder="Tu nombre" required>
+    <input type="email" name="email" placeholder="Tu correo electrónico" required>
+    <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+    <button type="submit">Enviar mensaje</button>
+  </form>
+
+  <div class="datos-contacto">
+    <p><strong>Correo:</strong> contacto@golfclub.com</p>
+    <p><strong>Teléfono:</strong> +34 600 123 456</p>
+  </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
