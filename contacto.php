@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contacto | HardGz</title>
+  <title>Contacto</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
@@ -80,18 +80,22 @@
 
   <p class="subcontacto">¿Tienes dudas, problemas al reservar o simplemente comunicarnos? Estamos aquí para ayudarte.</p>
 
+  <div id="division">
+<div class="datos-contacto">
+    <p><strong>Correo:</strong> contacto@golfclub.com</p>
+    <p><strong>Teléfono:</strong> +34 600 123 456</p>
+  </div>
+
   <form id="formcontacto">
+    <h2>Formulario contacto</h2>
     <input type="text" name="nombre" placeholder="Tu nombre" required>
     <input type="email" name="email" placeholder="Tu correo electrónico" required>
     <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
     <button type="submit">Enviar mensaje</button>
   </form>
 
-  <div class="datos-contacto">
-    <p><strong>Correo:</strong> contacto@golfclub.com</p>
-    <p><strong>Teléfono:</strong> +34 600 123 456</p>
-  </div>
-
+  
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>

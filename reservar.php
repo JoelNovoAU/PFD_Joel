@@ -1,3 +1,100 @@
+<?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+    use MongoDB\Client;
+
+require 'vendor/autoload.php';
+    $uri = "mongodb+srv://joelnp:joel16@cluster0.qcsid.mongodb.net/?retryWrites=true&w=majority";
+
+    $client = new Client($uri);
+    $database = $client->selectDatabase('PFDJoel'); 
+    $collection = $database->selectCollection('reservas');
+// Variables para fechas
+$hoy = new DateTime();
+$fechaLimite = clone $hoy;
+$fechaLimite->modify('+3 weeks');
+if (isset($_GET['getHoras'])) {
+    $fecha = $_GET['getHoras'];
+    $reservas = $collection->find(['fecha' => $fecha]);
+
+    $ocupadas = [];
+    foreach ($reservas as $reserva) {
+        $ocupadas[] = $reserva['hora'];
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($ocupadas);
+    exit;
+}
+// Procesar reserva
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $nombre = $_POST['nombre'];
+    $fecha = $_POST['fecha'];
+    $hora = $_POST['hora'];
+    $correo = $_POST['correo'];
+
+    $fechaSeleccionada = new DateTime($fecha);
+    if ($fechaSeleccionada < $hoy || $fechaSeleccionada > $fechaLimite) {
+        echo "<p style='color:red;'>❌ La fecha seleccionada debe estar dentro de los próximos 3 semanas.</p>";
+    } else {
+        $reservaExistente = $collection->findOne([
+            'fecha' => $fecha,
+            'hora' => $hora
+        ]);
+
+        if ($reservaExistente) {
+            echo "<p style='color:red;'>❌ Ya existe una reserva para el $fecha a las $hora.</p>";
+        } else {
+            $reserva = [
+                'nombre' => $nombre,
+                'fecha' => $fecha,
+                'hora' => $hora,
+                'correo' => $correo
+            ];
+            $collection->insertOne($reserva);
+
+    $mail = new PHPMailer(true);
+
+    try {
+        // Configuración del servidor SMTP de Gmail
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'jnovopampillon@gmail.com'; 
+        $mail->Password = 'wsmp peuo dony dovc'; 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+
+        // Remitente
+        $mail->setFrom('jnovopampillon@gmail.com', 'Reservas Web');
+
+        // Destinatario: el cliente
+        $mail->addAddress($correo);
+
+       
+
+        // Contenido del correo
+        $mail->isHTML(true);
+        $mail->Subject = 'Confirmacion de tu reserva';
+        $mail->Body = "
+            <h3>Hola $nombre,</h3>
+            <p>Gracias por realizar tu reserva para la fecha <strong>$fecha</strong>a las $hora horas.</p>
+            <p>Nos pondremos en contacto si hay algún cambio.</p>
+            <br>
+            <p>Saludos,<br>Equipo de Reservas</p>
+        ";
+
+        $mail->send();
+        echo '✅ Reserva confirmada. Revisa tu correo.';
+    } catch (Exception $e) {
+        echo "❌ Error al enviar el correo: {$mail->ErrorInfo}";
+    }
+}
+}
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,158 +156,84 @@
     </div>
   </nav>
 </header>
-<style>
-  
-    .calendar {
-      width: 320px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-   
-    .days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      padding: 10px;
-    }
-    .day-name, .day {
-      padding: 10px;
-    }
-    .day-name {
-      font-weight: bold;
-      background-color: #f0f0f0;
-    }
-    .day {
-      cursor: pointer;
-      border-radius: 4px;
-    }
-    .day:hover {
-      background-color: #e0e0e0;
-    }
-    .selected {
-      background-color: #007bff;
-      color: white;
-    }
-    .nav-button {
-      cursor: pointer;
-      background: none;
-      border: none;
-      font-size: 18px;
-      color: white;
-    }
-    .pistas {
-      width: 320px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      background: #f9f9f9;
-    }
-    .pista {
-      padding: 10px;
-      background-color: #dff0d8;
-      border: 1px solid #c3e6cb;
-      border-radius: 4px;
-      margin: 5px 0;
-    }
-  </style>
+
 </head>
-<body>
 
-<div class="calendar">
-  <div class="header">
-    <button class="nav-button" onclick="changeMonth(-1)">❮</button>
-    <div id="monthYear"></div>
-    <button class="nav-button" onclick="changeMonth(1)">❯</button>
-  </div>
-  <div class="days" id="dayNames"></div>
-  <div class="days" id="days"></div>
-</div>
+ <div class="container mt-5">
+        <h2>Reservar una pista</h2>
 
-<div class="pistas" id="pistas">
-  <strong>Selecciona un día para ver pistas disponibles.</strong>
-</div>
+        <form action="" method="POST" class="p-4 border bg-white rounded">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" class="form-control" required>
+            </div>
 
+            <div class="mb-3">
+                <label for="fecha" class="form-label">Fecha:</label>
+                <input type="date" name="fecha" id="fecha" class="form-control" 
+                    min="<?= $hoy->format('Y-m-d') ?>" max="<?= $fechaLimite->format('Y-m-d') ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="hora" class="form-label">Hora:</label>
+                <select name="hora" id="hora" class="form-control" required>
+                    <option value="">Primero selecciona una fecha</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo electrónico:</label>
+                <input type="email" name="correo" id="correo" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Reservar</button>
+        </form>
+    </div>
+
+   
 <script>
-  const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+document.getElementById('fecha').addEventListener('change', function() {
+    const fecha = this.value;
+    const selectHora = document.getElementById('hora');
 
-  const dayNamesContainer = document.getElementById('dayNames');
-  const daysContainer = document.getElementById('days');
-  const monthYear = document.getElementById('monthYear');
-  const pistasContainer = document.getElementById('pistas');
-
-  let currentDate = new Date();
-
-  // Simulación de disponibilidad
-  const pistasData = {
-    // formato: 'YYYY-MM-DD': ['Pista 1', 'Pista 2']
-    '2025-05-05': ['Pista 1', 'Pista 3'],
-    '2025-05-06': ['Pista 2'],
-    '2025-05-07': ['Pista 1', 'Pista 2', 'Pista 3'],
-  };
-
-  function renderCalendar(date) {
-    daysContainer.innerHTML = '';
-    monthYear.textContent = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-    const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-
-    // Espacios en blanco
-    for (let i = 0; i < firstDay; i++) {
-      daysContainer.innerHTML += `<div></div>`;
+    if (!fecha) {
+        selectHora.innerHTML = '<option value="">Primero selecciona una fecha</option>';
+        return;
     }
 
-    // Días
-    for (let i = 1; i <= daysInMonth; i++) {
-      const dayDiv = document.createElement('div');
-      dayDiv.classList.add('day');
-      dayDiv.textContent = i;
-      const fullDate = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${i.toString().padStart(2,'0')}`;
-      dayDiv.addEventListener('click', () => {
-        document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
-        dayDiv.classList.add('selected');
-        showPistas(fullDate);
-      });
-      daysContainer.appendChild(dayDiv);
-    }
-  }
+    fetch(`reservar.php?getHoras=${fecha}`)
+        .then(response => response.json())
+        .then(horasOcupadas => {
+            // Aquí defines todas las horas posibles para reservar, por ejemplo:
+            const todasHoras = [
+                '09:00', '10:00', '11:00', '12:00', 
+                '13:00', '14:00', '15:00', '16:00', 
+                '17:00', '18:00', '19:00', '20:00'
+            ];
 
-  function changeMonth(change) {
-    currentDate.setMonth(currentDate.getMonth() + change);
-    renderCalendar(currentDate);
-  }
+            const horasLibres = todasHoras.filter(h => !horasOcupadas.includes(h));
 
-  function showPistas(dateStr) {
-    const pistas = pistasData[dateStr] || [];
-    if (pistas.length > 0) {
-      pistasContainer.innerHTML = `<strong>Pistas disponibles para el ${dateStr}:</strong>`;
-      pistas.forEach(p => {
-        const div = document.createElement('div');
-        div.classList.add('pista');
-        div.textContent = p;
-        pistasContainer.appendChild(div);
-      });
-    } else {
-      pistasContainer.innerHTML = `<strong>No hay pistas disponibles para el ${dateStr}.</strong>`;
-    }
-  }
-
-  // Inicializar nombres de días
-  dayNames.forEach(name => {
-    const div = document.createElement('div');
-    div.classList.add('day-name');
-    div.textContent = name;
-    dayNamesContainer.appendChild(div);
-  });
-
-  renderCalendar(currentDate);
+           
+            if (horasLibres.length === 0) {
+                selectHora.innerHTML = '<option value="">No hay horas disponibles para esta fecha</option>';
+            } else {
+                selectHora.innerHTML = ''; 
+                horasLibres.forEach(hora => {
+                    const option = document.createElement('option');
+                    option.value = hora;
+                    option.textContent = hora;
+                    selectHora.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar horas:', error);
+            selectHora.innerHTML = '<option value="">Error al cargar horas</option>';
+        });
+});
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>
