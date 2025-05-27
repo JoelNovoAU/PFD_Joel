@@ -204,7 +204,6 @@ document.getElementById('fecha').addEventListener('change', function() {
     fetch(`reservar.php?getHoras=${fecha}`)
         .then(response => response.json())
         .then(horasOcupadas => {
-            // Aquí defines todas las horas posibles para reservar, por ejemplo:
             const todasHoras = [
                 '09:00', '10:00', '11:00', '12:00', 
                 '13:00', '14:00', '15:00', '16:00', 
