@@ -26,7 +26,6 @@ if (isset($_GET['getHoras'])) {
     echo json_encode($ocupadas);
     exit;
 }
-// Procesar reserva
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = $_POST['nombre'];
     $fecha = $_POST['fecha'];
@@ -56,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $mail = new PHPMailer(true);
 
     try {
-        // Configuración del servidor SMTP de Gmail
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
@@ -65,15 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
-        // Remitente
         $mail->setFrom('jnovopampillon@gmail.com', 'Reservas Web');
 
-        // Destinatario: el cliente
         $mail->addAddress($correo);
 
        
 
-        // Contenido del correo
         $mail->isHTML(true);
         $mail->Subject = 'Confirmacion de tu reserva';
         $mail->Body = "
@@ -174,12 +169,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     min="<?= $hoy->format('Y-m-d') ?>" max="<?= $fechaLimite->format('Y-m-d') ?>" required>
             </div>
 
-            <div class="mb-3">
-                <label for="hora" class="form-label">Hora:</label>
-                <select name="hora" id="hora" class="form-control" required>
-                    <option value="">Primero selecciona una fecha</option>
-                </select>
-            </div>
+           <div class="mb-3">
+    <label for="hora" class="form-label">Hora:</label>
+    <div id="hora-container" class="d-flex flex-wrap gap-2"></div>
+    <input type="hidden" name="hora" id="hora" required>
+</div>
+
 
             <div class="mb-3">
                 <label for="correo" class="form-label">Correo electrónico:</label>
@@ -194,12 +189,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script>
 document.getElementById('fecha').addEventListener('change', function() {
     const fecha = this.value;
-    const selectHora = document.getElementById('hora');
+    const horaContainer = document.getElementById('hora-container');
+    const horaInput = document.getElementById('hora');
 
-    if (!fecha) {
-        selectHora.innerHTML = '<option value="">Primero selecciona una fecha</option>';
-        return;
-    }
+    horaInput.value = ''; // Reset selected hour
+    horaContainer.innerHTML = ''; // Clear existing buttons
+
+    if (!fecha) return;
 
     fetch(`reservar.php?getHoras=${fecha}`)
         .then(response => response.json())
@@ -212,27 +208,43 @@ document.getElementById('fecha').addEventListener('change', function() {
 
             const horasLibres = todasHoras.filter(h => !horasOcupadas.includes(h));
 
-           
             if (horasLibres.length === 0) {
-                selectHora.innerHTML = '<option value="">No hay horas disponibles para esta fecha</option>';
+                horaContainer.innerHTML = '<p class="text-danger">No hay horas disponibles para esta fecha</p>';
             } else {
-                selectHora.innerHTML = ''; 
                 horasLibres.forEach(hora => {
-                    const option = document.createElement('option');
-                    option.value = hora;
-                    option.textContent = hora;
-                    selectHora.appendChild(option);
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn btn-outline-primary rounded-pill';
+                    btn.textContent = hora;
+
+                    btn.addEventListener('click', () => {
+                        // Quitar selección previa
+                        document.querySelectorAll('#hora-container button').forEach(b => b.classList.remove('active'));
+                        // Marcar seleccionada
+                        btn.classList.add('active');
+                        horaInput.value = hora;
+                    });
+
+                    horaContainer.appendChild(btn);
                 });
             }
         })
         .catch(error => {
             console.error('Error al cargar horas:', error);
-            selectHora.innerHTML = '<option value="">Error al cargar horas</option>';
+            horaContainer.innerHTML = '<p class="text-danger">Error al cargar horas</p>';
         });
 });
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<style>
+#hora-container button.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+</style>
 
 </body>
 </html>
