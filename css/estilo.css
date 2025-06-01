@@ -232,34 +232,89 @@ header {
 #headercont h2 {
   text-align: center;
   margin-top: 1rem;
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #798d4e;
+  font-weight: 700;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Subtítulo */
 .subcontacto {
   text-align: center;
-  font-size: 1.2rem;
-  margin: 1rem auto;
+  font-size: 1.25rem;
+  margin: 1rem auto 3rem;
   max-width: 700px;
   color: #333;
+  font-style: italic;
+  line-height: 1.5;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Contenedor de formulario e info */
+#division {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 50px;
+  padding: 2%;
+  flex-wrap: wrap; /* para que en pantallas pequeñas se adapten */
+  gap: 2rem;
+}
+
+/* Información de contacto */
+.datos-contacto {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 300px;
+  gap: 1rem;
+  font-family: 'Roboto', sans-serif;
+}
+
+.datos-contacto p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Añadir iconos a la info contacto */
+.datos-contacto p::before {
+  content: "📞"; /* puedes cambiar por emojis o iconos */
+  font-size: 1.3rem;
+  color: #798d4e;
+}
+
+.datos-contacto p:nth-child(1)::before {
+  content: "📧";
 }
 
 /* Formulario */
 #formcontacto {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
   max-width: 600px;
   padding: 0 1rem;
+  font-family: 'Roboto', sans-serif;
 }
 
 #formcontacto input,
 #formcontacto textarea {
   padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 1.5px solid #ccc;
+  border-radius: 12px;
   font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#formcontacto input:focus,
+#formcontacto textarea:focus {
+  border-color: #798d4e;
+  box-shadow: 0 0 8px rgba(121, 141, 78, 0.7);
+  outline: none;
 }
 
 #formcontacto button {
@@ -267,31 +322,57 @@ header {
   background-color: #798d4e;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 700;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #formcontacto button:hover {
   background-color: #6a7d44;
+  transform: scale(1.05);
+}
+.iconos-redes-cont {
+  display: flex;
+  gap: 20px; /* espacio entre iconos */
+  justify-content: center; /* centra los iconos dentro del contenedor */
+  margin-top: 15px;
 }
 
-/* Información de contacto */
-.datos-contacto {
-  text-align: center;
-  font-size: 1rem;
-  color: #555;
-  display: flex;
-  flex-direction: column;
-justify-content: center;
+.icono-red-cont {
+  width: 40px;    /* tamaño de los iconos */
+  height: 40px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  cursor: pointer;
 }
-#division{
-  display: flex;
-  justify-content: space-around;
-  margin-top: 50px;
-  padding: 2%;
+
+.icono-red-cont:hover {
+  transform: scale(1.2); /* agranda el icono al pasar el mouse */
+  filter: brightness(1.2); /* lo hace un poco más brillante */
 }
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+  #division {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .datos-contacto,
+  #formcontacto {
+    max-width: 90%;
+  }
+
+  .overlay-text {
+    font-size: 1.8rem;
+  }
+
+  #headercont h2 {
+    font-size: 1.8rem;
+  }
+}
+
 /*campos*/
 #titulocampo{
   margin-top: 3%;

@@ -80,21 +80,35 @@
 
   <p class="subcontacto">¿Tienes dudas, problemas al reservar o simplemente comunicarnos? Estamos aquí para ayudarte.</p>
 
-  <div id="division">
-<div class="datos-contacto">
-    <p><strong>Correo:</strong> contacto@golfclub.com</p>
-    <p><strong>Teléfono:</strong> +34 600 123 456</p>
-  </div>
+<div id="division">
 
-  <form id="formcontacto">
-    <h2>Formulario contacto</h2>
-    <input type="text" name="nombre" placeholder="Tu nombre" required>
-    <input type="email" name="email" placeholder="Tu correo electrónico" required>
-    <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
-    <button type="submit">Enviar mensaje</button>
-  </form>
+  <section class="datos-contacto" aria-label="Información de contacto">
+    <p><strong>Correo:</strong> <a href="mailto:contacto@golfclub.com">contacto@golfclub.com</a></p>
+    <p><strong>Teléfono:</strong> <a href="tel:+34600123456">+34 600 123 456</a></p>
+    
+    <div class="iconos-redes-cont" aria-label="Redes sociales">
+      <a href="https://facebook.com/tuPagina" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red-cont">
+      </a>
+      <a href="https://twitter.com/tuPagina" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <img src="img/gorjeo.png" alt="Twitter" class="icono-red-cont">
+      </a>
+      <a href="https://instagram.com/tuPagina" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <img src="img/instagram.png" alt="Instagram" class="icono-red-cont">
+      </a>
+    </div>
+  </section>
 
-  
+  <section>
+    <form id="formcontacto" aria-label="Formulario de contacto">
+      <h2>Formulario de contacto</h2>
+      <input type="text" name="nombre" placeholder="Tu nombre" required aria-required="true">
+      <input type="email" name="email" placeholder="Tu correo electrónico" required aria-required="true">
+      <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required aria-required="true"></textarea>
+      <button type="submit">Enviar mensaje</button>
+    </form>
+  </section>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

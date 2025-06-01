@@ -94,7 +94,7 @@ file_put_contents($qrTempPath, $pngData);
                 $mail->addAttachment($qrTempPath, 'reserva_qr.png');
 
                 $mail->isHTML(true);
-                $mail->Subject = 'Confirmación de tu reserva';
+                $mail->Subject = 'Confirmacion de tu reserva';
                 $mail->Body = "
                     <h3>Hola $nombre,</h3>
                     <p>Gracias por realizar tu reserva para la fecha <strong>$fecha</strong> a las $hora horas.</p>
