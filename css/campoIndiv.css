@@ -103,7 +103,7 @@ h1 {
   font-size: 2.8rem;
   margin-bottom: 0.5rem;
   text-align: center;
-  color: #2f5d3b;
+  color: #ffffff;
 }
 
 p {
@@ -156,7 +156,7 @@ h3 {
 }
 
 .hoyo-imagen {
-  max-width: 120px;
+  max-width: 220px;
   margin: 0 8px 10px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -231,4 +231,32 @@ h3 {
   padding: 1rem;
   border: 1px solid #ccc;
   margin-top: 10px;
+}
+.contenedor-imagen-texto {
+  position: relative;
+  width: 100%;
+}
+
+.imagen {
+  width: 100%;
+  height: 60vh;
+  display: block;
+}
+
+.texto-superpuesto {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; 
+  background-color: rgba(0, 0, 0, 0.4); /* fondo oscuro semitransparente */
+  color: white;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centra verticalmente */
+  align-items: center;     /* centra horizontalmente */
+  text-align: center;
+  z-index: 2;
 }

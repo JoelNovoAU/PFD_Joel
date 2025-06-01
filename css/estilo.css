@@ -293,6 +293,20 @@ justify-content: center;
   padding: 2%;
 }
 /*campos*/
+#titulocampo{
+  margin-top: 3%;
+}
+.campos{
+  display: flex !important;
+  justify-content: space-around !important;
+  flex-wrap: wrap;
+  margin-top: 3em;
+  gap: 30px;
+}
+.campoindi{
+display: flex;
+flex-direction: column;
+}
  .hoyo-imagen {
         max-width: 100px;
         margin-right: 5px;
@@ -306,23 +320,68 @@ justify-content: center;
         transform: scale(1.1);
     }
     .campo-img {
-        max-width: 300px;
+        max-width: 350px;
         height: auto;
         margin-bottom: 15px;
-        cursor: pointer;
+       /* cursor: pointer;*/
         border-radius: 6px;
         border: 1px solid #aaa;
-        transition: transform 0.2s ease;
+      /*  transition: transform 0.2s ease;*/
     }
-    .campo-img:hover {
+   /* .campo-img:hover {
         transform: scale(1.05);
-    }
+    }*/
     .hoyo-container {
         margin-bottom: 20px;
         padding: 10px;
         background: #f8f9fa;
         border-radius: 8px;
     }
+#botones {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.boton-jugar {
+  background-color: #fcaa1c;
+  color: white;
+  padding: 10px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.boton-jugar:hover {
+  background-color: #c77902;
+}
+
+.boton-info {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.boton-info:hover {
+  background-color: #dcdcdc;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -340,10 +399,3 @@ justify-content: center;
   }
 }
 
-/*campos*/
-.campos{
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  margin-top: 3em;
-}

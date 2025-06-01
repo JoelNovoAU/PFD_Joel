@@ -13,7 +13,7 @@
 <body>
 <div id="redes">
   <div class="info-contacto">
-    <img src="img/llamar.png" alt="Teléfono" class="icono-red">
+    <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
     <span>666 123 456</span>
   </div>
   <div class="iconos-redes">
@@ -60,7 +60,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace-icono" href="login.html">
+            <a class="nav-link enlace-icono" href="perfil.php">
              <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
             </a>
           </li>

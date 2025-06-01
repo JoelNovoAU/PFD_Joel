@@ -1,18 +1,24 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php'; // Autoload de Composer
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-    use MongoDB\Client;
+use MongoDB\Client;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\QROptions;
 
-require 'vendor/autoload.php';
-    $uri = "mongodb+srv://joelnp:joel16@cluster0.qcsid.mongodb.net/?retryWrites=true&w=majority";
+// Conexión a MongoDB
+$uri = "mongodb+srv://joelnp:joel16@cluster0.qcsid.mongodb.net/?retryWrites=true&w=majority";
+$client = new Client($uri);
+$database = $client->selectDatabase('PFDJoel'); 
+$collection = $database->selectCollection('reservas');
 
-    $client = new Client($uri);
-    $database = $client->selectDatabase('PFDJoel'); 
-    $collection = $database->selectCollection('reservas');
-// Variables para fechas
+// Fechas permitidas
 $hoy = new DateTime();
 $fechaLimite = clone $hoy;
 $fechaLimite->modify('+3 weeks');
+
+// Obtener horas ocupadas vía AJAX
 if (isset($_GET['getHoras'])) {
     $fecha = $_GET['getHoras'];
     $reservas = $collection->find(['fecha' => $fecha]);
@@ -26,6 +32,8 @@ if (isset($_GET['getHoras'])) {
     echo json_encode($ocupadas);
     exit;
 }
+
+// Procesamiento de formulario
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombre = $_POST['nombre'];
     $fecha = $_POST['fecha'];
@@ -34,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $fechaSeleccionada = new DateTime($fecha);
     if ($fechaSeleccionada < $hoy || $fechaSeleccionada > $fechaLimite) {
-        echo "<p style='color:red;'>❌ La fecha seleccionada debe estar dentro de los próximos 3 semanas.</p>";
+        echo "<p style='color:red;'>❌ La fecha seleccionada debe estar dentro de las próximas 3 semanas.</p>";
     } else {
         $reservaExistente = $collection->findOne([
             'fecha' => $fecha,
@@ -52,42 +60,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ];
             $collection->insertOne($reserva);
 
-    $mail = new PHPMailer(true);
+            // Generar código QR
+          $qrData = "Reserva:\nNombre: $nombre\nFecha: $fecha\nHora: $hora";
+$qrTempPath = sys_get_temp_dir() . '/qr_' . uniqid() . '.png';
 
-    try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'jnovopampillon@gmail.com'; 
-        $mail->Password = 'wsmp peuo dony dovc'; 
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port = 465;
+$options = new QROptions([
+    'outputType' => QRCode::OUTPUT_IMAGE_PNG,
+    'scale' => 6,
+]);
 
-        $mail->setFrom('jnovopampillon@gmail.com', 'Reservas Web');
+// Generar QR y guardar como archivo PNG válido
+$qrDataUri = (new QRCode($options))->render($qrData);
+$base64 = preg_replace('#^data:image/\w+;base64,#i', '', $qrDataUri);
+$pngData = base64_decode($base64);
+file_put_contents($qrTempPath, $pngData);
 
-        $mail->addAddress($correo);
+          
+            // Enviar correo con PHPMailer
+            $mail = new PHPMailer(true);
 
-       
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'jnovopampillon@gmail.com';
+                $mail->Password = 'wsmp peuo dony dovc'; // Usa App Password en Gmail
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port = 465;
 
-        $mail->isHTML(true);
-        $mail->Subject = 'Confirmacion de tu reserva';
-        $mail->Body = "
-            <h3>Hola $nombre,</h3>
-            <p>Gracias por realizar tu reserva para la fecha <strong>$fecha</strong>a las $hora horas.</p>
-            <p>Nos pondremos en contacto si hay algún cambio.</p>
-            <br>
-            <p>Saludos,<br>Equipo de Reservas</p>
-        ";
+                $mail->setFrom('jnovopampillon@gmail.com', 'Reservas Web');
+                $mail->addAddress($correo);
 
-        $mail->send();
-        echo '✅ Reserva confirmada. Revisa tu correo.';
-    } catch (Exception $e) {
-        echo "❌ Error al enviar el correo: {$mail->ErrorInfo}";
+                $mail->addAttachment($qrTempPath, 'reserva_qr.png');
+
+                $mail->isHTML(true);
+                $mail->Subject = 'Confirmación de tu reserva';
+                $mail->Body = "
+                    <h3>Hola $nombre,</h3>
+                    <p>Gracias por realizar tu reserva para la fecha <strong>$fecha</strong> a las $hora horas.</p>
+                    <p>Adjunto encontrarás un código QR con los datos de tu reserva.</p>
+                    <p>Nos pondremos en contacto si hay algún cambio.</p>
+                    <br>
+                    <p>Saludos,<br>Equipo de Reservas</p>
+                ";
+
+                $mail->send();
+                echo '✅ Reserva confirmada. Revisa tu correo.';
+            } catch (Exception $e) {
+                echo "❌ Error al enviar el correo: {$mail->ErrorInfo}";
+            } finally {
+                // Comenta esta línea mientras verificas el archivo
+                // if (file_exists($qrTempPath)) {
+                //     unlink($qrTempPath);
+                // }
+            }
+        }
     }
 }
-}
-}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -103,6 +134,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Document</title>
 </head>
 <body>
+     <div id="redes">
+    <div class="info-contacto">
+      <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
+      <span>666 123 456</span>
+    </div>
+    <div class="iconos-redes">
+      <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
+      <img src="img/gorjeo.png" alt="Twitter" class="icono-red">
+      <img src="img/instagram.png" alt="Instagram" class="icono-red">
+    </div>
+  </div>
 <header>
   <nav class="navbar navbar-expand-md w-100 py-3">
     <div class="container-fluid px-4">
@@ -140,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace-icono" href="login.html">
+            <a class="nav-link enlace-icono" href="perfil.php">
              <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
             </a>
           </li>

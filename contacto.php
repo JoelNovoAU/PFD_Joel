@@ -14,7 +14,7 @@
 
 <div id="redes">
   <div class="info-contacto">
-    <img src="img/llamar.png" alt="Teléfono" class="icono-red">
+    <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
     <span>666 123 456</span>
   </div>
   <div class="iconos-redes">
@@ -61,7 +61,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace-icono" href="login.html">
+            <a class="nav-link enlace-icono" href="perfil.php">
              <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
             </a>
           </li>
@@ -73,7 +73,7 @@
   </nav>
 </header>
 <div id="headercont">
-    <img id="imgcont" src="img/ChatGPT Image 15 may 2025, 00_27_23.png" alt="Campo de golf">
+    <img id="imgcont" src="img/golf-6561026_1920.jpg" alt="Campo de golf">
     <div class="overlay-text">  Contáctanos y haz hoy el mejor approach.</div>
     <h2>Contáctanos</h2>
   </div>

@@ -48,7 +48,7 @@ try {
 <body>
   <div id="redes">
     <div class="info-contacto">
-      <img src="img/llamar.png" alt="Teléfono" class="icono-red">
+      <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
       <span>666 123 456</span>
     </div>
     <div class="iconos-redes">
@@ -95,7 +95,7 @@ try {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link enlace-icono" href="login.html">
+              <a class="nav-link enlace-icono" href="perfil.php">
                 <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
               </a>
             </li>
@@ -106,31 +106,35 @@ try {
       </div>
     </nav>
   </header>
-<?php if ($esAdmin): ?>
-  <a href="añadirCampo.php">Añadir Campo</a>
-<?php endif; ?>
+ 
 
-<div class="container mt-5">
-  <h1>Campos Disponibles</h1>
-
+  <div class="container">
+    <h1 id="titulocampo" style="text-align: center;">Campos Disponibles</h1>
+     <?php if ($esAdmin): ?>
+    <a href="añadirCampo.php" class="btn btn-success ms-3">+ Añadir Campo</a>
+  <?php endif; ?>
 <div class="campos">
   <?php foreach ($campos as $campo): ?>
-    <a href="campoIndividual.php?id=<?php echo $campo['_id']; ?>" class="text-decoration-none text-dark">
+    <div id="campoindv">
       <div class="campoindi mb-5 border rounded p-4 shadow-sm">
-        <p><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
+        <p style="text-align: center;"><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
 
         <?php if (!empty($campo['img'])): ?>
-          <img src="<?php echo htmlspecialchars($campo['img']); ?>"
-               alt="Imagen de <?php echo htmlspecialchars($campo['nombre']); ?>"
-               class="campo-img img-fluid"
-               onclick="abrirModal(this.src)" />
+          <img src="<?php echo htmlspecialchars($campo['img']); ?>" class="campo-img img-fluid" />
         <?php endif; ?>
+<div id="botones">
+  <a class="boton-jugar" href="jugarPartida.php">Jugar Partida</a>
+  <a class="boton-info" href="campoIndividual.php?id=<?php echo $campo['_id']; ?>">Explorar Campo</a>
+</div>
+
       </div>
-    </a>
+    </div>
   <?php endforeach; ?>
 </div>
-</div>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>

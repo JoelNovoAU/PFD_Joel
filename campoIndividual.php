@@ -45,7 +45,7 @@ try {
 <body>
   <div id="redes">
   <div class="info-contacto">
-    <img src="img/llamar.png" alt="Teléfono" class="icono-red">
+    <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
     <span>666 123 456</span>
   </div>
   <div class="iconos-redes">
@@ -91,7 +91,7 @@ try {
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace-icono" href="login.html">
+            <a class="nav-link enlace-icono" href="perfil.php">
              <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
             </a>
           </li>
@@ -102,12 +102,14 @@ try {
     </div>
   </nav>
 </header>
- <h1><?php echo htmlspecialchars($campo['nombre']); ?></h1>
-  <p><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
+<div class="contenedor-imagen-texto">
+  <img src="<?php echo htmlspecialchars($campo['img']); ?>" alt="Imagen del campo" class="imagen">
+  <div class="texto-superpuesto">
+    <h1><?php echo htmlspecialchars($campo['nombre']); ?></h1>
+    <p><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
+  </div>
+</div>
 
-  <?php if (!empty($campo['img'])): ?>
-    <img src="<?php echo htmlspecialchars($campo['img']); ?>" class="img-fluid my-3">
-  <?php endif; ?>
 
   <?php if (!empty($campo['hoyos'])): ?>
     <h3>Hoyos:</h3>
@@ -150,7 +152,8 @@ try {
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 <script>
     const modal = new bootstrap.Modal(document.getElementById('imagenModal'));
     const modalImagen = document.getElementById('modalImagen');
