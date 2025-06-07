@@ -11,19 +11,20 @@ try {
     $database = $client->selectDatabase('PFDJoel'); 
     $collection = $database->selectCollection('campos');
     $collectionUsuarios = $database->selectCollection('usuarios');
-
     $usuario = $_SESSION['usuario'] ?? null;
     $esAdmin = false;
 
-    if ($usuario) {
-        $usuarioDB = $collectionUsuarios->findOne(['nombre' => $usuario]);
-        if ($usuarioDB && isset($usuarioDB['rol']) && $usuarioDB['rol'] === 'admin') {
-            $esAdmin = true;
-        }
+    if (isset($_SESSION['usuario']['nombre'])) {
+    $nombreUsuario = $_SESSION['usuario']['nombre'];
+    $usuarioDB = $collectionUsuarios->findOne(['nombre' => $nombreUsuario]);
+    
+    if ($usuarioDB && isset($usuarioDB['rol']) && $usuarioDB['rol'] === 'admin') {
+        $esAdmin = true;
     }
+}
 
     if (!$esAdmin) {
-        header("Location: index.php");
+        header("Location: index.html");
         exit();
     }
 
@@ -87,6 +88,7 @@ try {
             'img' => $rutaImagen,
             'hoyos' => $hoyos,
         ]);
+header("Location: partida.php");
 
         exit();
     }

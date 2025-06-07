@@ -106,13 +106,13 @@ try {
   <img src="<?php echo htmlspecialchars($campo['img']); ?>" alt="Imagen del campo" class="imagen">
   <div class="texto-superpuesto">
     <h1><?php echo htmlspecialchars($campo['nombre']); ?></h1>
-    <p><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
+    <p id="textoimg"><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
   </div>
 </div>
 
 
   <?php if (!empty($campo['hoyos'])): ?>
-    <h3>Hoyos:</h3>
+    <h3 id="listahoyos">Hoyos:</h3>
     <div class="hoyos-seleccionables">
     <?php foreach ($campo['hoyos'] as $index => $hoyo): ?>
       <div class="hoyo-circulo"><?php echo htmlspecialchars($hoyo['nombre']); ?></div>
@@ -123,7 +123,7 @@ try {
   <!-- Contenedores con info, uno por hoyo -->
   <?php foreach ($campo['hoyos'] as $hoyo): ?>
     <div class="hoyo-info">
-      <h5><?php echo htmlspecialchars($hoyo['nombre']); ?></h5>
+      <h3><?php echo htmlspecialchars($hoyo['nombre']); ?></h3>
     <p><?php echo htmlspecialchars($hoyo['descripcion']); ?></p>
       <?php if (!empty($hoyo['imagenes'])): ?>
         <?php foreach ($hoyo['imagenes'] as $img): ?>
@@ -136,6 +136,7 @@ try {
     </div>
   <?php endforeach; ?>
 <?php endif; ?>
+<a href="reservar.php?campo=<?= urlencode($campo['nombre']) ?>" class="btn btn-success">Reservar</a>
   <a href="partida.php" class="btn btn-secondary mt-4">← Volver</a>
 
 

@@ -117,7 +117,7 @@ try {
   <?php foreach ($campos as $campo): ?>
     <div id="campoindv">
       <div class="campoindi mb-5 border rounded p-4 shadow-sm">
-        <p style="text-align: center;"><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
+        <p style="text-align: center;"><?php echo nl2br(htmlspecialchars($campo['nombre'])); ?></p>
 
         <?php if (!empty($campo['img'])): ?>
           <img src="<?php echo htmlspecialchars($campo['img']); ?>" class="campo-img img-fluid" />

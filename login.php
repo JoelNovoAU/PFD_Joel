@@ -22,7 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($usuario && password_verify($password, $usuario['password'])) { 
         $_SESSION['usuario'] = $usuario['nombre'];
         $_SESSION['id'] = $usuario['_id'];
-
+$_SESSION['usuario'] = [
+    'nombre' => $usuario['nombre'],
+    'gmail'  => $usuario['gmail']
+];
         header('Location: index.html');
         exit;
     } else {

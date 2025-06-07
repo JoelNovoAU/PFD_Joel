@@ -106,7 +106,7 @@ h1 {
   color: #ffffff;
 }
 
-p {
+#textoimg {
   font-size: 1.15rem;
   max-width: 700px;
   margin: 0.5rem auto 1.5rem;
@@ -128,7 +128,7 @@ img.campo-img:hover {
   transform: scale(1.05);
 }
 
-h3 {
+#listahoyos {
   color: #46693e;
   margin-top: 3rem;
   margin-bottom: 1rem;
@@ -149,14 +149,15 @@ h3 {
   margin-right: auto;
 }
 
-.hoyo-container h5 {
+.hoyo-container h3 {
   color: #345423;
   margin-bottom: 10px;
   font-weight: 600;
 }
 
 .hoyo-imagen {
-  max-width: 220px;
+  max-width: 250px;
+  min-height:150px;
   margin: 0 8px 10px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -239,7 +240,7 @@ h3 {
 
 .imagen {
   width: 100%;
-  height: 60vh;
+  height: 55vh;
   display: block;
 }
 
