@@ -128,6 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilo.css">
     <title>Document</title>
+    <style>
+   
+        
+    </style>
 </head>
 <body>
 <div id="redes">
@@ -236,79 +240,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
 </div>
 <div class="container my-5 post-card-container">
   <?php foreach ($posts as $post): ?>
-    <div class="card mb-4 shadow-sm">
-      <div class="card-body">
-        <!-- Nombre arriba a la izquierda -->
-        <div class="d-flex align-items-center mb-2">
-          <strong><?= htmlspecialchars($post['usuario']['nombre'] ?? 'Anónimo') ?></strong>
-          <span class="text-muted ms-2" style="font-size:0.9em;">
+    <div class="pub-container mb-4">
+      <a href="publicacionInd.php?id=<?= $post['_id'] ?>" style="text-decoration:none; color:inherit; display:block;">
+        <div class="pub-header">
+          <span class="pub-user"><?= htmlspecialchars($post['usuario']['nombre'] ?? 'Anónimo') ?></span>
+          <span class="pub-date">
             <?= isset($post['fecha']) ? $post['fecha']->toDateTime()->format('d/m/Y H:i') : '' ?>
           </span>
         </div>
-        <!-- Texto -->
-        <p class="mb-3"><?= nl2br(htmlspecialchars($post['texto'] ?? '')) ?></p>
-        <!-- Foto más pequeña -->
+        <div class="pub-text"><?= nl2br(htmlspecialchars($post['texto'] ?? '')) ?></div>
         <?php if (!empty($post['foto'])): ?>
-          <img src="<?= htmlspecialchars($post['foto']) ?>" alt="Foto del post" class="post-card-img rounded">
+          <img src="<?= htmlspecialchars($post['foto']) ?>" alt="Foto del post" class="pub-img">
         <?php endif; ?>
-        <!-- Vídeo -->
         <?php if (!empty($post['video'])): ?>
-          <video controls autoplay class="w-100 rounded mb-2">
-            <source  src="<?= htmlspecialchars($post['video']) ?>">
+          <video controls autoplay class="pub-video">
+            <source src="<?= htmlspecialchars($post['video']) ?>">
             Tu navegador no soporta el video.
           </video>
         <?php endif; ?>
-        <?php if (!empty($post['comentarios'])): ?>
-  <div class="mb-2 ps-2">
-    <?php foreach ($post['comentarios'] as $coment): ?>
-      <div class="border-start ps-2 mb-1">
-        <strong style="font-size:0.95em;"><?= htmlspecialchars($coment['usuario']) ?></strong>
-        <span class="text-muted" style="font-size:0.8em;">
-          <?= isset($coment['fecha']) ? $coment['fecha']->toDateTime()->format('d/m/Y H:i') : '' ?>
-        </span>
-        <div><?= nl2br(htmlspecialchars($coment['texto'])) ?></div>
-      </div>
-    <?php endforeach; ?>
-  </div>
-
-<?php endif; ?>
-
-<!-- Contenedor flex para comentario y like en línea -->
-<div class="d-flex align-items-center gap-2 mt-2">
-  <?php if (isset($usuario['nombre'])): ?>
-    <!-- Formulario para añadir comentario -->
-    <form action="comunidad.php" method="POST" class="flex-grow-1 d-flex gap-2 m-0">
-        <input type="hidden" name="post_id" value="<?= $post['_id'] ?>">
-        <input type="text" name="comentario" class="form-control" placeholder="Escribe un comentario..." required maxlength="200">
-        <button type="submit" class="btn btn-outline-primary">Comentar</button>
-    </form>
-    <!-- Formulario para dar like -->
-    <form action="comunidad.php" method="POST" class="m-0">
-        <input type="hidden" name="like_post_id" value="<?= $post['_id'] ?>">
+      </a>
+      <!-- Likes y comentarios resumen -->
+      <div class="pub-likes">
         <?php
-            $likesArray = isset($post['likes']) ? (array)$post['likes'] : [];
-            $yaLike = in_array($usuario['nombre'], $likesArray);
-            $numLikes = count($likesArray);
+          $likesArray = isset($post['likes']) ? (array)$post['likes'] : [];
+          $yaLike = $usuario ? in_array($usuario['nombre'], $likesArray) : false;
+          $numLikes = count($likesArray);
         ?>
-        <button type="submit" class="btn btn-link text-decoration-none p-0" style="font-size:1.7em; color:<?= $yaLike ? 'red' : '#aaa' ?>;">
+        <form action="comunidad.php" method="POST" style="display:inline;">
+          <input type="hidden" name="like_post_id" value="<?= $post['_id'] ?>">
+          <button type="submit" class="like-btn<?= $yaLike ? ' liked' : '' ?>" <?= $usuario ? '' : 'disabled' ?>>
             <?= $yaLike ? '❤️' : '🤍' ?>
-        </button>
-        <span style="font-size:1.1em;"><?= $numLikes ?></span>
-    </form>
-  <?php else: ?>
-    <!-- Si no está logueado, solo muestra el input de comentario deshabilitado y el like gris -->
-    <input type="text" class="form-control" placeholder="Inicia sesión para comentar" disabled style="max-width:300px;">
-    <?php
-        $likesArray = isset($post['likes']) ? (array)$post['likes'] : [];
-        $numLikes = count($likesArray);
-    ?>
-    <button type="button" class="btn btn-link text-decoration-none p-0" style="font-size:1.7em; color:#aaa;" disabled>
-        🤍
-    </button>
-    <span style="font-size:1.1em;"><?= $numLikes ?></span>
-  <?php endif; ?>
-</div>
+          </button>
+        </form>
+        <span><?= $numLikes ?></span>
       </div>
+      <div class="pub-comments-title">Comentarios</div>
+     <?php if (!empty($post['comentarios'])): ?>
+  <?php
+    // Mostrar solo los dos últimos comentarios
+$comentarios = array_slice((array)$post['comentarios'], -2);
+    foreach ($comentarios as $coment):
+  ?>
+    <div class="pub-comment">
+      <span class="pub-comment-user"><?= htmlspecialchars($coment['usuario']) ?></span>
+      <span class="pub-comment-date">
+        <?= isset($coment['fecha']) ? $coment['fecha']->toDateTime()->format('d/m/Y H:i') : '' ?>
+      </span>
+      <div class="pub-comment-text"><?= nl2br(htmlspecialchars($coment['texto'])) ?></div>
+    </div>
+  <?php endforeach; ?>
+<?php else: ?>
+  <div class="text-muted">No hay comentarios aún.</div>
+<?php endif; ?>
+      <!-- Formulario para comentar -->
+      <?php if ($usuario): ?>
+        <form action="comunidad.php" method="POST" class="pub-comment-form">
+          <input type="hidden" name="post_id" value="<?= $post['_id'] ?>">
+          <input type="text" name="comentario" placeholder="Escribe un comentario..." maxlength="200" required>
+          <button type="submit">Comentar</button>
+        </form>
+      <?php else: ?>
+        <div class="text-muted" style="margin-top:1em;">Inicia sesión para comentar o dar like.</div>
+      <?php endif; ?>
     </div>
   <?php endforeach; ?>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

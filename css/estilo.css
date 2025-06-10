@@ -566,6 +566,163 @@ flex-direction: column;
   box-shadow: none !important;
 }
 /*comunidad*/
+     
+        .pub-container {
+            background: #fff;
+            max-width: 900px;
+            margin: 2.5rem auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+            padding: 2.5rem 2rem 2rem 2rem;
+            width: 100%;
+        }
+        .pub-header {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            margin-bottom: 1.2em;
+        }
+        .pub-user {
+            font-weight: 700;
+            color: #798d4e;
+            font-size: 1.15em;
+        }
+        .pub-date {
+            color: #888;
+            font-size: 0.98em;
+        }
+        .pub-text {
+            font-size: 1.15em;
+            margin-bottom: 1.5em;
+            white-space: pre-line;
+        }
+        .pub-img {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.2em;
+            box-shadow: 0 2px 8px #798d4e22;
+        }
+        .pub-video {
+    width: 100%;
+    max-width: 100%;
+    max-height: 420px;
+    border-radius: 10px;
+    margin-bottom: 1.2em;
+    box-shadow: 0 2px 8px #798d4e22;
+    display: block;
+    object-fit: cover;
+}
+        .pub-likes {
+            color: #d32f2f;
+            font-size: 1.1em;
+            margin-bottom: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .like-btn {
+            background: none;
+            border: none;
+            font-size: 1.7em;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.2s;
+            padding: 0;
+            margin-right: 0.2em;
+        }
+        .like-btn.liked {
+            color: red;
+        }
+        .like-btn:disabled {
+            cursor: not-allowed;
+            color: #ccc;
+        }
+        .pub-comments-title {
+            font-weight: 600;
+            color: #798d4e;
+            margin-top: 2em;
+            margin-bottom: 0.7em;
+        }
+        .pub-comment {
+            border-left: 3px solid #f8c467;
+            margin-bottom: 1em;
+            padding-left: 1em;
+        }
+        .pub-comment-user {
+            font-weight: 600;
+            color: #183153;
+            font-size: 0.98em;
+        }
+        .pub-comment-date {
+            color: #888;
+            font-size: 0.85em;
+            margin-left: 0.5em;
+        }
+        .pub-comment-text {
+            font-size: 1em;
+        }
+        .pub-back {
+            display: inline-block;
+            margin-bottom: 1.5em;
+            color: #798d4e;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .pub-back:hover {
+            color: #f8c467;
+        }
+        .pub-msg {
+            margin-bottom: 1em;
+            padding: 0.7em 1em;
+            border-radius: 8px;
+            font-size: 1em;
+            text-align: center;
+        }
+        .pub-success {
+            background: #f0fff0;
+            color: #2e7d32;
+        }
+        .pub-error {
+            background: #fff0f0;
+            color: #b30000;
+        }
+        .pub-comment-form {
+            margin-top: 1.5em;
+            display: flex;
+            gap: 0.5em;
+        }
+        .pub-comment-form input[type="text"] {
+            flex: 1;
+            padding: 0.6em 1em;
+            border-radius: 6px;
+            border: 1px solid #cfd8dc;
+            font-size: 1em;
+        }
+        .pub-comment-form button {
+            background: #798d4e;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.6em 1.2em;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .pub-comment-form button:hover {
+            background: #f8c467;
+            color: #222;
+        }
+        @media (max-width: 950px) {
+    .pub-container {
+        max-width: 98vw;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
 .fullscreen-form {
   position: fixed;
   top: 0; left: 0;
@@ -606,20 +763,4 @@ flex-direction: column;
   height: 2.5rem;
   background-size: 2rem 2rem;
   filter: invert(0.9);
-}
-.post-card-container {
-  max-width: 60%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.post-card-img {
-  max-width: 100%;
-  max-height: 300px;
-  width: 100%;
-  object-fit: cover;
-  display: block;
-  margin-bottom: 1rem;
- margin-left: auto;
-  margin-right: auto;
 }

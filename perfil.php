@@ -11,28 +11,78 @@ if (!isset($_SESSION['usuario'])) {
   exit();
 }
 
-try {
-  $client = new Client($uri);
-  $database = $client->selectDatabase('PFDJoel');
-  $collection = $database->selectCollection('campos');
-  $collectionUsuarios = $database->selectCollection('usuarios');
+$client = new Client($uri);
+$database = $client->selectDatabase('PFDJoel');
+$usuarios = $database->selectCollection('usuarios');
+$partidas = $database->selectCollection('partidas');
+$reservas = $database->selectCollection('reservas');
 
-  $campos = $collection->find()->toArray();
-  $usuario = $_SESSION['usuario'] ?? null;
-  $esAdmin = false;
-
-  if ($usuario) {
-    $usuarioDB = $collectionUsuarios->findOne(['nombre' => $usuario]);
-    if ($usuarioDB && isset($usuarioDB['rol']) && $usuarioDB['rol'] === 'admin') {
-      $esAdmin = true;
+$usuario = $_SESSION['usuario']['nombre'];
+$usuarioDB = $usuarios->findOne(['nombre' => $usuario]);
+$correo = $_SESSION['usuario']['gmail'];
+// Cambiar contraseña
+$msg = '';
+if(isset($_POST['cambiar_pass'])){
+    $actual = $_POST['pass_actual'];
+    $nueva = $_POST['pass_nueva'];
+    $nueva2 = $_POST['pass_nueva2'];
+    if(password_verify($actual, $usuarioDB['password'])){
+        if($nueva === $nueva2){
+            $usuarios->updateOne(['_id'=>$usuarioDB['_id']], ['$set'=>['password'=>password_hash($nueva, PASSWORD_DEFAULT)]]);
+            $msg = "<div class='alert alert-success'>Contraseña cambiada correctamente.</div>";
+        }else{
+            $msg = "<div class='alert alert-danger'>Las contraseñas nuevas no coinciden.</div>";
+        }
+    }else{
+        $msg = "<div class='alert alert-danger'>Contraseña actual incorrecta.</div>";
     }
-  }
-
-} catch (Exception $e) {
-  echo "Error al conectar a MongoDB: " . $e->getMessage();
-  exit();
 }
 
+// Editar datos
+if(isset($_POST['editar_datos'])){
+    $nuevoNombre = trim($_POST['nombre']);
+$nuevoCorreo = trim($_POST['gmail']);
+    $nuevoTelefono = trim($_POST['telefono']);
+    $usuarios->updateOne(['_id'=>$usuarioDB['_id']], [
+        '$set'=>[
+            'nombre'=>$nuevoNombre,
+'gmail'=>$nuevoCorreo,
+            'telefono'=>$nuevoTelefono
+        ]
+    ]);
+$_SESSION['usuario'] = [
+    'nombre' => $nuevoNombre,
+    'gmail'  => $nuevoCorreo
+];    $msg = "<div class='alert alert-success'>Datos actualizados.</div>";
+    // Recargar datos
+    $usuarioDB = $usuarios->findOne(['_id'=>$usuarioDB['_id']]);
+}
+if(isset($_POST['borrar_reserva']) && isset($_POST['id_reserva'])){
+    $idReserva = new MongoDB\BSON\ObjectId($_POST['id_reserva']);
+    $reservas->deleteOne(['_id' => $idReserva]);
+    // Recargar reservas después de borrar
+    $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
+}
+// Eliminar cuenta
+if(isset($_POST['eliminar_cuenta'])){
+    $usuarios->deleteOne(['_id'=>$usuarioDB['_id']]);
+    $partidas->deleteMany(['usuario'=>$usuarioDB['nombre']]);
+$reservas->deleteMany(['correo'=>$usuarioDB['gmail']]);
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
+
+// Cerrar sesión
+if(isset($_POST['logout'])){
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
+
+// Obtener partidas y reservas del usuario
+$misPartidas = $partidas->find(['usuario'=>$usuarioDB['nombre']])->toArray();
+$misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
 ?>
 
 <!DOCTYPE html>
@@ -112,3 +162,116 @@ try {
       </div>
     </nav>
   </header>
+
+
+<div class="container my-4">
+  <h2>Mi perfil</h2>
+  <?= $msg ?>
+  <ul class="nav nav-tabs mb-3" id="perfilTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="datos-tab" data-bs-toggle="tab" data-bs-target="#datos" type="button" role="tab">Mis datos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="partidas-tab" data-bs-toggle="tab" data-bs-target="#partidas" type="button" role="tab">Partidas guardadas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="reservas-tab" data-bs-toggle="tab" data-bs-target="#reservas" type="button" role="tab">Reservas realizadas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pass-tab" data-bs-toggle="tab" data-bs-target="#pass" type="button" role="tab">Cambiar contraseña</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="eliminar-tab" data-bs-toggle="tab" data-bs-target="#eliminar" type="button" role="tab">Eliminar cuenta</button>
+    </li>
+  </ul>
+  <div class="tab-content" id="perfilTabsContent">
+    <!-- Mis datos -->
+    <div class="tab-pane fade show active" id="datos" role="tabpanel">
+      <form method="POST" class="mb-3">
+        <input type="hidden" name="editar_datos" value="1">
+        <div class="mb-2">
+          <label>Nombre</label>
+          <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($usuarioDB['nombre']) ?>" required>
+        </div>
+        <div class="mb-2">
+          <label>Correo</label>
+          <input type="email" name="gmail" class="form-control" value="<?= htmlspecialchars($usuarioDB['gmail']) ?>" required>
+        </div>
+        <div class="mb-2">
+          <label>Teléfono</label>
+          <input type="text" name="telefono" minlength="9" maxlength="9" class="form-control" value="<?= htmlspecialchars($usuarioDB['telefono'] ?? '') ?>">
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      </form>
+    </div>
+    <!-- Partidas guardadas -->
+    <div class="tab-pane fade" id="partidas" role="tabpanel">
+      <h5>Mis partidas</h5>
+      <?php if(count($misPartidas)): ?>
+        <ul class="list-group">
+          <?php foreach($misPartidas as $p): ?>
+            <li class="list-group-item">
+              <?= htmlspecialchars($p['nombre'] ?? 'Sin nombre') ?> - <?= htmlspecialchars($p['fecha'] ?? '') ?>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      <?php else: ?>
+        <div class="text-muted">No tienes partidas guardadas.</div>
+      <?php endif; ?>
+    </div>
+    <!-- Reservas realizadas -->
+   <div class="tab-pane fade" id="reservas" role="tabpanel">
+  <h5>Mis reservas</h5>
+  <?php if(count($misReservas)): ?>
+    <ul class="list-group">
+      <?php foreach($misReservas as $r): ?>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <?= htmlspecialchars($r['fecha'] ?? '') ?> - <?= htmlspecialchars($r['hora'] ?? '') ?> - <?= htmlspecialchars($r['campo'] ?? '') ?>
+          </span>
+          <form method="POST" class="m-0" onsubmit="return confirm('¿Seguro que quieres borrar esta reserva?');">
+            <input type="hidden" name="borrar_reserva" value="1">
+            <input type="hidden" name="id_reserva" value="<?= $r['_id'] ?>">
+            <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
+          </form>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  <?php else: ?>
+    <div class="text-muted">No tienes reservas.</div>
+  <?php endif; ?>
+</div>
+    <!-- Cambiar contraseña -->
+    <div class="tab-pane fade" id="pass" role="tabpanel">
+      <form method="POST" class="mb-3">
+        <input type="hidden" name="cambiar_pass" value="1">
+        <div class="mb-2">
+          <label>Contraseña actual</label>
+          <input type="password" name="pass_actual" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label>Nueva contraseña</label>
+          <input type="password" name="pass_nueva" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label>Repetir nueva contraseña</label>
+          <input type="password" name="pass_nueva2" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+      </form>
+    </div>
+    <!-- Eliminar cuenta -->
+    <div class="tab-pane fade" id="eliminar" role="tabpanel">
+      <form method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');">
+        <input type="hidden" name="eliminar_cuenta" value="1">
+        <button type="submit" class="btn btn-danger">Eliminar cuenta</button>
+      </form>
+    </div>
+  </div>
+  <form method="POST" class="mt-4">
+    <button type="submit" name="logout" class="btn btn-secondary">Cerrar sesión</button>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

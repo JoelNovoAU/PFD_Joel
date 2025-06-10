@@ -166,7 +166,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ";  
 
         $mail->send();
-        echo '✅ Reserva confirmada. Revisa tu correo.';
+        echo "<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var modal = new bootstrap.Modal(document.getElementById('reservaOkModal'));
+    modal.show();
+  });
+</script>";
       } catch (Exception $e) {
         echo "❌ Error al enviar el correo: {$mail->ErrorInfo}";
       } finally {
@@ -316,7 +321,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
   </div>
 
-
+<div class="modal fade" id="reservaOkModal" tabindex="-1" aria-labelledby="reservaOkLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header border-0">
+        <h5 class="modal-title w-100" id="reservaOkLabel">¡Reserva realizada!</h5>
+      </div>
+      <div class="modal-body">
+        <p class="fs-4">✅ Tu reserva se ha realizado correctamente.</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
   <script>
     document.getElementById('fecha').addEventListener('change', function () {
       const fecha = this.value;
