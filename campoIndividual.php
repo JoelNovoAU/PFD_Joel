@@ -109,7 +109,7 @@ try {
     <p id="textoimg"><?php echo nl2br(htmlspecialchars($campo['desc'])); ?></p>
   </div>
 </div>
-
+<a href="reservar.php?campo=<?= urlencode($campo['nombre']) ?>" class="btn-reservar">Reservar este campo</a>
 
   <?php if (!empty($campo['hoyos'])): ?>
     <h3 id="listahoyos">Hoyos:</h3>
@@ -136,7 +136,6 @@ try {
     </div>
   <?php endforeach; ?>
 <?php endif; ?>
-<a href="reservar.php?campo=<?= urlencode($campo['nombre']) ?>" class="btn btn-success">Reservar</a>
   <a href="partida.php" class="btn btn-secondary mt-4">← Volver</a>
 
 

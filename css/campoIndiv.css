@@ -261,3 +261,22 @@ img.campo-img:hover {
   text-align: center;
   z-index: 2;
 }
+.btn-reservar {
+  display: block;
+  margin: 2.5rem auto 1.5rem auto;
+  background: #798d4e;
+  color: #fff;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 2em;
+  box-shadow: 0 2px 8px #798d4e22;
+  transition: background 0.2s, transform 0.15s;
+  text-align: center;
+  text-decoration: none;
+}
+.btn-reservar:hover {
+  background: #46693e;
+  color: #fff;
+  transform: translateY(-2px) scale(1.03);
+}

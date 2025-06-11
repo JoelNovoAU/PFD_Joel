@@ -264,7 +264,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
     </nav>
   </header>
-
+<div id="headercont">
+    <img id="imgcont" src="img/golf-1695459.jpg" alt="Campo de golf">
+    <div class="overlay-text">    "Reservar aquí es rápido y sencillo, ¡siempre encuentro pista!"<br>
+</div>
+  </div>
 
   <div class="container my-5" id="formulario-reserva">
     <h2 class="text-center mb-4" style="color: #798d4e; font-weight: 700;">Reservar una pista</h2>

@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
     </style>
 </head>
 <body>
-<div id="redes">
+  <div id="redes">
   <div class="info-contacto">
     <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
     <span>666 123 456</span>
@@ -145,7 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
     <img src="img/instagram.png" alt="Instagram" class="icono-red">
   </div>
 </div>
-
 <header>
   <nav class="navbar navbar-expand-md w-100 py-3">
     <div class="container-fluid px-4">
@@ -162,10 +161,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
         <ul class="navbar-nav d-flex  flex-md-row align-items-md-center">
 
           <li class="nav-item">
-            <a class="nav-link enlace" href="partida.php">PARTIDA</a>
+            <a class="nav-link enlace " href="partida.php">PARTIDA</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace enlace-destacado" href="comunidad.php">COMUNIDAD</a>
+            <a class="nav-link enlace enlace-destacado " href="comunidad.php">COMUNIDAD</a>
           </li>
           <li class="nav-item">
             <a class="nav-link enlace" href="contacto.php">CONTACTO</a>
@@ -178,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link enlace-icono" href="reservar.php">
+            <a class="nav-link enlace-icono " href="reservar.php">
               <!-- <img src="img/reserva.png" alt="Reserva pista">--> RESERVA PISTA
             </a>
           </li>
@@ -194,7 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
     </div>
   </nav>
 </header>
-
 
 <?php if (!$usuario): ?>
   <a 
@@ -253,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
           <img src="<?= htmlspecialchars($post['foto']) ?>" alt="Foto del post" class="pub-img">
         <?php endif; ?>
         <?php if (!empty($post['video'])): ?>
-          <video controls autoplay class="pub-video">
+          <video controls muted autoplay class="pub-video">
             <source src="<?= htmlspecialchars($post['video']) ?>">
             Tu navegador no soporta el video.
           </video>
