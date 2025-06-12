@@ -29,7 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nuevo_comentario']) &
         $msg = "<div class='pub-msg pub-success'>Comentario publicado.</div>";
     }
 }
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post_id'])) {
+    $postId = new MongoDB\BSON\ObjectId($_POST['delete_post_id']);
+    // Solo permite borrar si el gmail coincide
+    $post = $collection->findOne(['_id' => $postId]);
+    if ($post && isset($post['usuario']['gmail']) && $usuario && $usuario['gmail'] === $post['usuario']['gmail']) {
+        $collection->deleteOne(['_id' => $postId]);
+        header("Location: comunidad.php");
+        exit();
+    }
+}
 // Procesar like
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id']) && $usuario && $id) {
     $postId = $_POST['like_post_id'];
@@ -65,8 +74,10 @@ if ($id) {
     <meta charset="UTF-8">
     <title>Publicación</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/estilo.css">
@@ -75,7 +86,7 @@ if ($id) {
      <div id="redes">
     <div class="info-contacto">
       <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
-      <span>666 123 456</span>
+      <span>info@novogolf.com</span>
     </div>
     <div class="iconos-redes">
       <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
@@ -121,7 +132,7 @@ if ($id) {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link enlace-icono enlace-destacado"  href="perfil.php">
+              <a class="nav-link enlace-icono "  href="perfil.php">
                 <!-- <img src="img/usuario.png" alt="Usuario">-->MI CUENTA
               </a>
             </li>
@@ -132,16 +143,48 @@ if ($id) {
       </div>
     </nav>
   </header>
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteLabel">¿Eliminar publicación?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer.
+      </div>
+      <div class="modal-footer">
+        <form action="publicacionInd.php?id=<?= $post['_id'] ?>" method="POST">
+            <input type="hidden" name="delete_post_id" value="<?= $post['_id'] ?>">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="pub-container">
     <a href="comunidad.php" class="pub-back">&larr; Volver a la comunidad</a>
+     <?php if ($usuario && isset($post['usuario']['gmail']) && $usuario['gmail'] === $post['usuario']['gmail']): ?>
+<?php endif; ?>
     <?= $msg ?>
     <?php if ($post): ?>
-        <div class="pub-header">
-            <span class="pub-user"><?= htmlspecialchars($post['usuario']['nombre'] ?? 'Anónimo') ?></span>
-            <span class="pub-date">
-                <?= isset($post['fecha']) ? $post['fecha']->toDateTime()->format('d/m/Y H:i') : '' ?>
-            </span>
-        </div>
+    <div class="pub-header d-flex align-items-center justify-content-between">
+    <div>
+        <span class="pub-user"><?= htmlspecialchars($post['usuario']['nombre'] ?? 'Anónimo') ?></span>
+        <span class="pub-date">
+            <?= isset($post['fecha']) ? $post['fecha']->toDateTime()->format('d/m/Y H:i') : '' ?>
+        </span>
+    </div>
+    <?php if ($usuario && isset($post['usuario']['gmail']) && $usuario['gmail'] === $post['usuario']['gmail']): ?>
+        <form action="publicacionInd.php?id=<?= $post['_id'] ?>" method="POST" style="display:inline;">
+            <input type="hidden" name="delete_post_id" value="<?= $post['_id'] ?>">
+         <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+    Eliminar
+</button>
+        </form>
+    <?php endif; ?>
+</div>
         <div class="pub-text"><?= nl2br(htmlspecialchars($post['texto'] ?? '')) ?></div>
         <?php if (!empty($post['foto'])): ?>
             <img src="<?= htmlspecialchars($post['foto']) ?>" alt="Imagen de la publicación" class="pub-img">

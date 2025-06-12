@@ -46,7 +46,7 @@ try {
   <div id="redes">
   <div class="info-contacto">
     <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
-    <span>666 123 456</span>
+    <span>info@novogolf.com</span>
   </div>
   <div class="iconos-redes">
     <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">

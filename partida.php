@@ -16,12 +16,12 @@ try {
   $usuario = $_SESSION['usuario'] ?? null;
   $esAdmin = false;
 
-  if ($usuario) {
-    $usuarioDB = $collectionUsuarios->findOne(['nombre' => $usuario]);
-    if ($usuarioDB && isset($usuarioDB['rol']) && $usuarioDB['rol'] === 'admin') {
-      $esAdmin = true;
-    }
+ if ($usuario) {
+  $usuarioDB = $collectionUsuarios->findOne(['nombre' => $usuario['nombre']]);
+  if ($usuarioDB && isset($usuarioDB['rol']) && $usuarioDB['rol'] === 'admin') {
+    $esAdmin = true;
   }
+}
 
 } catch (Exception $e) {
   echo "Error al conectar a MongoDB: " . $e->getMessage();
@@ -49,7 +49,7 @@ try {
   <div id="redes">
     <div class="info-contacto">
       <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
-      <span>666 123 456</span>
+      <span>info@novogolf.com</span>
     </div>
     <div class="iconos-redes">
       <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
@@ -123,7 +123,7 @@ try {
           <img src="<?php echo htmlspecialchars($campo['img']); ?>" class="campo-img img-fluid" />
         <?php endif; ?>
 <div id="botones">
-  <a class="boton-jugar" href="jugarPartida.php">Jugar Partida</a>
+  <a class="boton-jugar" href="jugarPartida.php?id=<?php echo $campo['_id']; ?>">Jugar Partida</a>
   <a class="boton-info" href="campoIndividual.php?id=<?php echo $campo['_id']; ?>">Explorar Campo</a>
 </div>
 

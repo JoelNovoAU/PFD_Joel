@@ -81,8 +81,9 @@ if(isset($_POST['logout'])){
 }
 
 // Obtener partidas y reservas del usuario
-$misPartidas = $partidas->find(['usuario'=>$usuarioDB['nombre']])->toArray();
+$misPartidas = $partidas->find(['correo'=>$usuarioDB['gmail']])->toArray();
 $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
+
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +98,7 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
     href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap"
     rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/perfil.css">
   <title>Document</title>
 </head>
 
@@ -105,7 +106,7 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
   <div id="redes">
     <div class="info-contacto">
       <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
-      <span>666 123 456</span>
+      <span>info@novogolf.com</span>
     </div>
     <div class="iconos-redes">
       <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
@@ -205,20 +206,33 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
       </form>
     </div>
     <!-- Partidas guardadas -->
-    <div class="tab-pane fade" id="partidas" role="tabpanel">
-      <h5>Mis partidas</h5>
-      <?php if(count($misPartidas)): ?>
-        <ul class="list-group">
-          <?php foreach($misPartidas as $p): ?>
-            <li class="list-group-item">
-              <?= htmlspecialchars($p['nombre'] ?? 'Sin nombre') ?> - <?= htmlspecialchars($p['fecha'] ?? '') ?>
-            </li>
-          <?php endforeach; ?>
-        </ul>
-      <?php else: ?>
-        <div class="text-muted">No tienes partidas guardadas.</div>
-      <?php endif; ?>
-    </div>
+   <div class="tab-pane fade" id="partidas" role="tabpanel">
+  <h5>Mis partidas</h5>
+  <?php if(count($misPartidas)): ?>
+    <ul class="list-group">
+      <?php foreach($misPartidas as $p): ?>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            <?= htmlspecialchars($p['campo_nombre'] ?? ($p['nombre'] ?? 'Sin nombre')) ?>
+            -  <?php
+    if (isset($p['fecha']) && $p['fecha'] instanceof MongoDB\BSON\UTCDateTime) {
+        $dt = $p['fecha']->toDateTime();
+        $dt->setTimezone(new DateTimeZone('Europe/Madrid'));
+        echo $dt->format('d/m/Y H:i');
+    }
+  ?>
+          </span>
+          <form method="POST" action="resultados.php" class="m-0">
+            <input type="hidden" name="id_partida" value="<?= $p['_id'] ?>">
+            <button type="submit" class="btn btn-sm btn-primary">Ver resultados</button>
+          </form>
+        </li>
+      <?php endforeach; ?>
+    </ul>
+  <?php else: ?>
+    <div class="text-muted">No tienes partidas guardadas.</div>
+  <?php endif; ?>
+</div>
     <!-- Reservas realizadas -->
    <div class="tab-pane fade" id="reservas" role="tabpanel">
   <h5>Mis reservas</h5>

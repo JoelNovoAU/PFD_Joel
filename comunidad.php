@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
   <div id="redes">
   <div class="info-contacto">
     <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
-    <span>666 123 456</span>
+    <span>info@novogolf.com</span>
   </div>
   <div class="iconos-redes">
     <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
   </a>
 <?php else: ?>
   <button 
-    class="btn btn-primary btn-lg rounded-circle shadow fab-btn" 
+    class="btn btn-primary rounded-circle shadow fab-btn"
     type="button" 
     data-bs-toggle="collapse" 
     data-bs-target="#nuevoPost" 
@@ -216,22 +216,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
 <?php endif; ?>
 
 <div class="collapse" id="nuevoPost">
-  <div class="fullscreen-form">
-    <form action="comunidad.php" method="POST" enctype="multipart/form-data" class="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
-      <button type="button" class="btn-close position-absolute top-0 end-0 m-4" data-bs-toggle="collapse" data-bs-target="#nuevoPost" aria-label="Cerrar"></button>
-      <div class="mb-3 w-75">
-        <textarea name="texto" class="form-control" rows="6" placeholder="¿Qué quieres compartir?" required></textarea>
+  <div class="fullscreen-form d-flex justify-content-center align-items-center">
+    <form action="comunidad.php" method="POST" enctype="multipart/form-data" class="post-modal-form shadow-lg rounded-4 p-4 bg-white">
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-toggle="collapse" data-bs-target="#nuevoPost" aria-label="Cerrar"></button>
+      <h3 class="mb-4 text-center fw-bold" style="letter-spacing:1px;">Nueva publicación</h3>
+      <div class="mb-3">
+        <textarea name="texto" class="form-control form-control-lg rounded-3" rows="5" placeholder="¿Qué quieres compartir?" maxlength="500" required></textarea>
       </div>
-      <div class="mb-3 w-75">
-        <label class="form-label">Foto (opcional):</label>
-        <input type="file" name="foto" accept="image/*" class="form-control">
+      <div class="row g-3 mb-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Foto (opcional):</label>
+          <input type="file" name="foto" accept="image/*" class="form-control rounded-3" id="inputFoto">
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label fw-semibold">Vídeo (opcional):</label>
+          <input type="file" name="video" accept="video/*" class="form-control rounded-3" id="inputVideo">
+        </div>
       </div>
-      <div class="mb-3 w-75">
-        <label class="form-label">Vídeo (opcional):</label>
-        <input type="file" name="video" accept="video/*" class="form-control">
-      </div>
-      <div class="text-end w-75">
-        <button type="submit" class="btn btn-success w-100">Publicar</button>
+    
+      <div class="d-grid">
+        <button type="submit" class="btn btn-success btn-lg rounded-3">Publicar</button>
       </div>
     </form>
   </div>
@@ -239,12 +243,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
 <div class="container my-5 post-card-container">
   <?php foreach ($posts as $post): ?>
     <div class="pub-container mb-4">
+     
       <a href="publicacionInd.php?id=<?= $post['_id'] ?>" style="text-decoration:none; color:inherit; display:block;">
         <div class="pub-header">
           <span class="pub-user"><?= htmlspecialchars($post['usuario']['nombre'] ?? 'Anónimo') ?></span>
           <span class="pub-date">
-            <?= isset($post['fecha']) ? $post['fecha']->toDateTime()->format('d/m/Y H:i') : '' ?>
-          </span>
+ <?php
+    if (isset($post['fecha']) && $post['fecha'] instanceof MongoDB\BSON\UTCDateTime) {
+        $dt = $post['fecha']->toDateTime();
+        $dt->setTimezone(new DateTimeZone('Europe/Madrid'));
+        echo $dt->format('d/m/Y H:i');
+    }
+  ?>          </span>
         </div>
         <div class="pub-text"><?= nl2br(htmlspecialchars($post['texto'] ?? '')) ?></div>
         <?php if (!empty($post['foto'])): ?>

@@ -1,0 +1,77 @@
+body, html {
+  font-family: "Special Gothic Expanded One", sans-serif;
+}
+.hoyo-card {
+    border-radius: 14px;
+    background: #f5f6fa;
+    box-shadow: 0 2px 12px #798d4e22;
+    border: none;
+}
+
+/* Cabecera elegante */
+.hoyo-header {
+    background-color: #798d4e;
+    color: #fff;
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    min-height: 48px;
+}
+
+
+.hoyo-flag {
+    font-size: 1.4rem;
+    color: #f8c467;
+}
+
+.hoyo-nombre {
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+/* Cuerpo de la tarjeta */
+.hoyo-body {
+    background: #f5f6fa;
+}
+
+.hoyo-desc {
+    color: #384d3c;
+    font-size: 1.05em;
+    font-style: italic;
+    margin-bottom: 1.2em;
+}
+
+/* Input y nombre de jugador */
+.jugador-icon {
+    background: #e9ecef;
+    color: #384d3c;
+}
+
+.jugador-nombre {
+    color: #384d3c;
+    font-size: 0.97em;
+}
+
+.score-input {
+    width: 100%;
+    text-align: center;
+    border-radius: 6px;
+}
+
+/* Botón guardar */
+.btn-guardar {
+    font-size: 1.1rem;
+    border-radius: 10px;
+    margin-top: 1.5em;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
+    background-color: #798d4e;
+    color: white;
+}
+.btn-guardar:hover {
+    color: #f8c467;
+    background-color: #505d35;
+}

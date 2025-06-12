@@ -15,7 +15,7 @@
 <div id="redes">
   <div class="info-contacto">
     <img src="img/correo-electronico.png" alt="Teléfono" class="icono-red">
-    <span>666 123 456</span>
+    <span>info@novogolf.com</span>
   </div>
   <div class="iconos-redes">
     <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red">
@@ -83,7 +83,7 @@
 <div id="division">
 
   <section class="datos-contacto" aria-label="Información de contacto">
-    <p><strong>Correo:</strong> <a href="mailto:contacto@golfclub.com">contacto@golfclub.com</a></p>
+    <p><strong>Correo:</strong> <a href="mailto:contacto@golfclub.com">info@novogolf.com</a></p>
     <p><strong>Teléfono:</strong> <a href="tel:+34600123456">+34 600 123 456</a></p>
     
     <div class="iconos-redes-cont" aria-label="Redes sociales">
