@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php'; // Autoload de Composer
+require_once __DIR__ . '/vendor/autoload.php'; 
 session_start();
 
 $usuario = $_SESSION['usuario'] ?? null;
@@ -21,7 +21,6 @@ $hoy = new DateTime();
 $fechaLimite = clone $hoy;
 $fechaLimite->modify('+3 weeks');
 
-// Cambiado: ahora getHoras recibe campo y fecha
 if (isset($_GET['getHoras']) && isset($_GET['campo'])) {
   $fecha = $_GET['getHoras'];
   $campo = $_GET['campo'];
@@ -37,7 +36,6 @@ if (isset($_GET['getHoras']) && isset($_GET['campo'])) {
   exit;
 }
 
-// Procesamiento de formulario
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $nombre = $_POST['nombre'];
   $fecha = $_POST['fecha'];
@@ -52,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reservaExistente = $collection->findOne([
       'fecha' => $fecha,
       'hora' => $hora,
-      'campo' => $campo // Solo bloquea si es el mismo campo
+      'campo' => $campo 
     ]);
 
     if ($reservaExistente) {
@@ -67,26 +65,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       ];
       $collection->insertOne($reserva);
 
-      // Contar reservas del usuario por su correo
       $correo = trim(strtolower($correo));
       $reservasUsuario = $collection->countDocuments(['correo' => $correo]);
 
       if ($reservasUsuario % 3 == 0) {
-        // Generar cupón aleatorio de 8 caracteres (letras y números)
         $caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $cupon = '';
         for ($i = 0; $i < 8; $i++) {
           $cupon .= $caracteres[rand(0, strlen($caracteres) - 1)];
         }
 
-        // Enviar correo con el cupón
         $mailCupon = new PHPMailer(true);
         try {
           $mailCupon->isSMTP();
           $mailCupon->Host = 'smtp.gmail.com';
           $mailCupon->SMTPAuth = true;
           $mailCupon->Username = 'jnovopampillon@gmail.com';
-          $mailCupon->Password = 'wsmp peuo dony dovc'; // Usa App Password en Gmail
+          $mailCupon->Password = 'wsmp peuo dony dovc'; 
           $mailCupon->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
           $mailCupon->Port = 465;
 
@@ -110,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               </div>";
         }
       }
-      // Generar código QR
       $qrData = "Reserva:\nNombre: $nombre\nFecha: $fecha\nHora: $hora \nCampo: $campo";
       $qrTempPath = sys_get_temp_dir() . '/qr_' . uniqid() . '.png';
 
@@ -119,13 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'scale' => 6,
       ]);
 
-      // Generar QR y guardar como archivo PNG válido
       $qrDataUri = (new QRCode($options))->render($qrData);
       $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $qrDataUri);
       $pngData = base64_decode($base64);
       file_put_contents($qrTempPath, $pngData);
 
-      // Enviar correo con PHPMailer
       $mail = new PHPMailer(true);
 
       try {
@@ -133,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'jnovopampillon@gmail.com';
-        $mail->Password = 'wsmp peuo dony dovc'; // Usa App Password en Gmail
+        $mail->Password = 'wsmp peuo dony dovc'; 
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465;
 
@@ -164,10 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       } catch (Exception $e) {
         echo "❌ Error al enviar el correo: {$mail->ErrorInfo}";
       } finally {
-        // Comenta esta línea mientras verificas el archivo
-        // if (file_exists($qrTempPath)) {
-        //     unlink($qrTempPath);
-        // }
+        
       }
     }
   }
@@ -378,7 +367,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     document.getElementById('fecha').addEventListener('change', cargarHoras);
     document.getElementById('campo').addEventListener('change', cargarHoras);
 
-    // Si ya hay valores seleccionados al cargar la página, carga las horas
     window.addEventListener('DOMContentLoaded', function() {
       if (document.getElementById('fecha').value && document.getElementById('campo').value) {
         cargarHoras();

@@ -85,7 +85,7 @@ elseif (isset($_POST['num_jugadores']) && !isset($_POST['jugadores'])):
 </body>
 </html>
 <?php
-// Paso 3: Guardar partida y mostrar formulario de puntuaciones
+
 elseif (isset($_POST['jugadores'])):
     $jugadores = $_POST['jugadores'];
 
@@ -94,7 +94,6 @@ elseif (isset($_POST['jugadores'])):
     $puntuaciones = $_POST['tiros'];
     $correo = $_SESSION['usuario']['gmail'] ?? 'anonimo@sinlogin.com';
 
-    // Procesar archivo antes de crear $partida
    $mediaPaths = [];
 if (isset($_FILES['media']) && is_array($_FILES['media']['name'])) {
     foreach ($_FILES['media']['tmp_name'] as $i => $tmpName) {
@@ -112,7 +111,6 @@ if (isset($_FILES['media']) && is_array($_FILES['media']['name'])) {
     }
 }
 
-    // Ahora sí, crea el array con media ya definido
     $partida = [
         'fecha' => new MongoDB\BSON\UTCDateTime(),
         'campo_id' => $campo['_id'],
@@ -137,10 +135,8 @@ if (isset($_FILES['media']) && is_array($_FILES['media']['name'])) {
         $partida['jugadores'][] = $jugadorData;
     }
 
-        // Guardar en la colección
         $collection->insertOne($partida);
 
-        // Calcular resultados
         $resultados = [];
         foreach ($partida['jugadores'] as $jugador) {
             $total = 0;
@@ -155,7 +151,6 @@ if (isset($_FILES['media']) && is_array($_FILES['media']['name'])) {
         usort($resultados, fn($a, $b) => $a['total'] <=> $b['total']);
         $_SESSION['partida_reciente'] = $partida;
         $_SESSION['resultados_partida'] = $resultados;
-        // Redirige a la página de resultados
         header("Location: resultados.php");
         exit;
     }

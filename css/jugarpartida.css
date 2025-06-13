@@ -8,7 +8,6 @@ body, html {
     border: none;
 }
 
-/* Cabecera elegante */
 .hoyo-header {
     background-color: #798d4e;
     color: #fff;
@@ -32,7 +31,6 @@ body, html {
     letter-spacing: 1px;
 }
 
-/* Cuerpo de la tarjeta */
 .hoyo-body {
     background: #f5f6fa;
 }
@@ -44,7 +42,6 @@ body, html {
     margin-bottom: 1.2em;
 }
 
-/* Input y nombre de jugador */
 .jugador-icon {
     background: #e9ecef;
     color: #384d3c;
@@ -61,7 +58,6 @@ body, html {
     border-radius: 6px;
 }
 
-/* Botón guardar */
 .btn-guardar {
     font-size: 1.1rem;
     border-radius: 10px;

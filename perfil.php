@@ -54,22 +54,20 @@ $_SESSION['usuario'] = [
     'nombre' => $nuevoNombre,
     'gmail'  => $nuevoCorreo
 ];    $msg = "<div class='alert alert-success'>Datos actualizados.</div>";
-    // Recargar datos
     $usuarioDB = $usuarios->findOne(['_id'=>$usuarioDB['_id']]);
 }
 if(isset($_POST['borrar_reserva']) && isset($_POST['id_reserva'])){
     $idReserva = new MongoDB\BSON\ObjectId($_POST['id_reserva']);
     $reservas->deleteOne(['_id' => $idReserva]);
-    // Recargar reservas después de borrar
     $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
 }
 // Eliminar cuenta
-if(isset($_POST['eliminar_cuenta'])){
+if(isset($_POST['borrar_cuenta'])){
     $usuarios->deleteOne(['_id'=>$usuarioDB['_id']]);
     $partidas->deleteMany(['usuario'=>$usuarioDB['nombre']]);
 $reservas->deleteMany(['correo'=>$usuarioDB['gmail']]);
     session_destroy();
-    header('Location: login.php');
+    header('Location: index.html');
     exit();
 }
 
@@ -268,7 +266,7 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
         ¿Estás seguro de que deseas cancelar esta reserva?
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>+
         <button type="button" class="btn btn-danger" id="btnConfirmarBorrar">Sí, cancelar</button>
       </div>
     </div>
@@ -337,9 +335,9 @@ document.addEventListener('DOMContentLoaded', function() {
         <p class="fs-5">Esta acción eliminará tu perfil y todos tus datos.<br>¿Deseas continuar?</p>
       </div>
       <div class="modal-footer border-0 justify-content-center">
-        <form method="POST" action="borrar_perfil.php">
-          <button type="submit" class="btn btn-danger">Sí, borrar</button>
-        </form>
+        <form method="POST" action="">
+  <button type="submit" class="btn btn-danger" name="borrar_cuenta" value="1">Sí, borrar</button>
+</form>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
       </div>
     </div>

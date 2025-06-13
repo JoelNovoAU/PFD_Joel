@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/estilo.css">
+
+
 </head>
 <body>
 
@@ -82,22 +84,30 @@
 
 <div id="division">
 
-  <section class="datos-contacto" aria-label="Información de contacto">
-    <p><strong>Correo:</strong> <a href="mailto:contacto@golfclub.com">info@novogolf.com</a></p>
-    <p><strong>Teléfono:</strong> <a href="tel:+34600123456">+34 600 123 456</a></p>
-    
+<section class="datos-contacto" aria-label="Información de contacto">
+  <div class="contacto-card">
+    <h5>Contacto</h5>
+    <p>
+      <strong>Correo:</strong>
+      <a href="mailto:contacto@golfclub.com" class="contact-link">info@novogolf.com</a>
+    </p>
+    <p>
+      <strong>Teléfono:</strong>
+      <a href="tel:+34600123456" class="contact-link">+34 600 123 456</a>
+    </p>
     <div class="iconos-redes-cont" aria-label="Redes sociales">
-      <a href="https://facebook.com/tuPagina" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+      <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
         <img src="img/simbolo-de-la-aplicacion-de-facebook.png" alt="Facebook" class="icono-red-cont">
       </a>
-      <a href="https://twitter.com/tuPagina" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+      <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
         <img src="img/gorjeo.png" alt="Twitter" class="icono-red-cont">
       </a>
-      <a href="https://instagram.com/tuPagina" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
         <img src="img/instagram.png" alt="Instagram" class="icono-red-cont">
       </a>
     </div>
-  </section>
+  </div>
+</section>
 
   <section>
     <form id="formcontacto" aria-label="Formulario de contacto">

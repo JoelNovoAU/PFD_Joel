@@ -75,25 +75,21 @@ header {
   color: white;
 }
 
-/* Enlace destacado */
 .enlace-destacado {
   color: #f8c467;
 }
 
-/* Iconos de enlace con imagen */
 .enlace-icono {
   display: flex;
   align-items: center;
   gap: 6px;
 }
-/* Mejoras generales */
 body {
   background: #f7fafc;
   font-family: "Special Gothic Expanded One", sans-serif;
   color: #222;
 }
 
-/* Contenedor principal */
 .container {
   background: #fff;
   border-radius: 18px;
@@ -103,14 +99,12 @@ body {
   margin-bottom: 2.5rem;
 }
 
-/* Títulos */
 h2, h5 {
   font-weight: 700;
   color: #2e7d32;
   letter-spacing: 1px;
 }
 
-/* Nav tabs */
 .nav-tabs {
   border-bottom: 2px solid #e0e0e0;
   margin-bottom: 2rem;
@@ -130,7 +124,6 @@ h2, h5 {
   background: #e8f5e9;
 }
 
-/* Formularios */
 .form-control {
   border-radius: 8px;
   border: 1px solid #bdbdbd;
@@ -146,7 +139,6 @@ h2, h5 {
   background: #fff;
 }
 
-/* Botones */
 .btn-primary, .btn-success, .btn-danger, .btn-secondary {
   border-radius: 8px;
   font-weight: 600;
@@ -183,7 +175,6 @@ h2, h5 {
   background: #455a64;
 }
 
-/* Listas de partidas y reservas */
 .list-group-item {
   border: none;
   border-radius: 10px;
@@ -196,19 +187,16 @@ h2, h5 {
   margin-left: 0.5rem;
 }
 
-/* Alertas */
 .alert {
   border-radius: 8px;
   font-size: 1rem;
   margin-bottom: 1.2rem;
 }
 
-/* Tabs content */
 .tab-pane {
   padding-top: 1.2rem;
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .container {
     padding: 1rem 0.5rem;

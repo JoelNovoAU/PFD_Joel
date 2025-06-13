@@ -11,7 +11,6 @@ $resultados = [];
 $id = $_POST['id_partida'] ?? $_GET['id_partida'] ?? null;
 if ($id) {
     $partida = $partidas->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
-    // Calcula resultados si es necesario
     $resultados = [];
     foreach ($partida['jugadores'] as $jugador) {
         $total = 0;
@@ -25,7 +24,6 @@ if ($id) {
     }
     usort($resultados, fn($a, $b) => $a['total'] <=> $b['total']);
 } else {
-    // Si vienes de una partida recién jugada
     $resultados = $_SESSION['resultados_partida'] ?? [];
     $partida = $_SESSION['partida_reciente'] ?? null;
 }
@@ -113,7 +111,6 @@ if (!$resultados) {
     <h2 class="mb-4 text-center">🏆 Resultados de la Partida 🏆</h2>
     <div class="podium">
         <?php
-        // Podio: 2º, 1º, 3º (si hay suficientes jugadores)
         $segundo = $resultados[1] ?? null;
         $tercero = $resultados[2] ?? null;
         ?>
@@ -197,12 +194,10 @@ if (!$resultados) {
         </div>
     </div>
 
-    <!-- Modal para mostrar la imagen grande -->
     <div class="modal fade" id="modalImagen" tabindex="-1" aria-labelledby="modalImagenLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-body text-center" id="modalMediaBody">
-        <!-- Aquí se insertará la imagen o el video -->
       </div>
     </div>
   </div>
@@ -213,7 +208,6 @@ if (!$resultados) {
     </div>
 </div>
 <script>
-// Cambia la imagen o video del modal al hacer click en una miniatura
 document.addEventListener('DOMContentLoaded', function() {
     var modalBody = document.getElementById('modalMediaBody');
     var imgs = document.querySelectorAll('.img-click');

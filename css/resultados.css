@@ -29,7 +29,6 @@
   height: auto;
 }
 
-/* Encabezado y navegación */
 header {
   background-color: #798d4e;
   z-index: 1000;
@@ -46,7 +45,6 @@ header {
   margin-right: 5%;
 }
 
-/* Enlaces con animación tipo border-bottom */
 .enlace,
 .enlace-icono {
   color: white;
@@ -78,12 +76,10 @@ header {
   color: white;
 }
 
-/* Enlace destacado */
 .enlace-destacado {
   color: #f8c467;
 }
 
-/* Iconos de enlace con imagen */
 .enlace-icono {
   display: flex;
   align-items: center;

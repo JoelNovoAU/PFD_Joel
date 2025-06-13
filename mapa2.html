@@ -27,7 +27,6 @@
       let infoWindow;
 
       function initMap() {
-        // Intentar obtener la ubicación del usuario
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -36,7 +35,6 @@
                 lng: position.coords.longitude,
               };
 
-              // Crear el mapa centrado en la ubicación del usuario
               map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 13,
                 center: userLocation,
@@ -45,7 +43,6 @@
 
               infoWindow = new google.maps.InfoWindow();
 
-              // Marcador de ubicación del usuario
             new google.maps.Marker({
   map,
   position: userLocation,
@@ -56,7 +53,6 @@
   }
 });
 
-              // Buscar campos de golf cerca
               const service = new google.maps.places.PlacesService(map);
               const request = {
                 location: userLocation,

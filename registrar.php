@@ -46,7 +46,6 @@ $_SESSION['usuario'] = [
 
     ?>
 
-<!-- Ejemplo de login/registro con imagen grande a la derecha -->
 <!DOCTYPE html>
 <html lang="es">
 <head>

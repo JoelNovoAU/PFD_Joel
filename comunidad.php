@@ -48,17 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id'])) {
     $postId = new MongoDB\BSON\ObjectId($_POST['like_post_id']);
     $nombreUsuario = $usuario['nombre'] ?? null;
     if ($nombreUsuario) {
-        // Verifica si ya dio like
-        $post = $collection->findOne(['_id' => $postId, 'likes' => $nombreUsuario]);
+
+      $post = $collection->findOne(['_id' => $postId, 'likes' => $nombreUsuario]);
         if ($post) {
-            // Si ya dio like, lo quita (toggle)
-            $collection->updateOne(
+
+          $collection->updateOne(
                 ['_id' => $postId],
                 ['$pull' => ['likes' => $nombreUsuario]]
             );
         } else {
-            // Si no, lo añade
-            $collection->updateOne(
+
+          $collection->updateOne(
                 ['_id' => $postId],
                 ['$addToSet' => ['likes' => $nombreUsuario]]
             );
@@ -68,13 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id'])) {
     exit();
 }
 
-// --- Procesar nuevo post ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
     $texto = trim($_POST['texto']);
     $fotoPath = '';
     $videoPath = '';
 
-    // Guardar foto si se sube
     if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $fotoName = uniqid() . '_' . basename($_FILES['foto']['name']);
         $fotoPath = 'img/comunidad/' . $fotoName;
@@ -84,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
         move_uploaded_file($_FILES['foto']['tmp_name'], $fotoPath);
     }
 
-    // Guardar video si se sube
     if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
         $videoName = uniqid() . '_' . basename($_FILES['video']['name']);
         $videoPath = 'img/comunidad/' . $videoName;
@@ -94,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
         move_uploaded_file($_FILES['video']['tmp_name'], $videoPath);
     }
 
-    // Guardar el post en la colección comunidad
     $collection->insertOne([
         'usuario' => [
             'nombre' => $usuario['nombre'],
@@ -267,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
           </video>
         <?php endif; ?>
       </a>
-      <!-- Likes y comentarios resumen -->
+
       <div class="pub-likes">
         <?php
           $likesArray = isset($post['likes']) ? (array)$post['likes'] : [];
@@ -285,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['texto'])) {
       <div class="pub-comments-title">Comentarios</div>
      <?php if (!empty($post['comentarios'])): ?>
   <?php
-    // Mostrar solo los dos últimos comentarios
+
 $comentarios = array_slice((array)$post['comentarios'], -2);
     foreach ($comentarios as $coment):
   ?>
@@ -300,8 +296,8 @@ $comentarios = array_slice((array)$post['comentarios'], -2);
 <?php else: ?>
   <div class="text-muted">No hay comentarios aún.</div>
 <?php endif; ?>
-      <!-- Formulario para comentar -->
-      <?php if ($usuario): ?>
+
+<?php if ($usuario): ?>
         <form action="comunidad.php" method="POST" class="pub-comment-form">
           <input type="hidden" name="post_id" value="<?= $post['_id'] ?>">
           <input type="text" name="comentario" placeholder="Escribe un comentario..." maxlength="200" required>

@@ -120,7 +120,6 @@ try {
     <?php endforeach; ?>
   </div>
 
-  <!-- Contenedores con info, uno por hoyo -->
   <?php foreach ($campo['hoyos'] as $hoyo): ?>
     <div class="hoyo-info">
       <h3><?php echo htmlspecialchars($hoyo['nombre']); ?></h3>
@@ -164,17 +163,14 @@ try {
     }
 </script>
 <script>
-  // Seleccionamos todos los círculos y las info de hoyos
   const hoyosCirculos = document.querySelectorAll('.hoyo-circulo');
   const hoyosInfo = document.querySelectorAll('.hoyo-info');
 
   hoyosCirculos.forEach((circulo, index) => {
     circulo.addEventListener('click', () => {
-      // Quitamos active de todos los círculos y contenedores info
       hoyosCirculos.forEach(c => c.classList.remove('active'));
       hoyosInfo.forEach(i => i.classList.remove('active'));
 
-      // Activamos el círculo y la info correspondiente
       circulo.classList.add('active');
       hoyosInfo[index].classList.add('active');
     });

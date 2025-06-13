@@ -7,13 +7,11 @@ $client = new Client("mongodb+srv://joelnp:joel16@cluster0.qcsid.mongodb.net/?re
 $database = $client->selectDatabase('PFDJoel');
 $collection = $database->selectCollection('comunidad');
 
-// Obtener el id de la publicación
 $id = $_GET['id'] ?? null;
 $post = null;
 $msg = "";
 $usuario = $_SESSION['usuario'] ?? null;
 
-// Procesar nuevo comentario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nuevo_comentario']) && $usuario && $id) {
     $nuevoComentario = trim($_POST['nuevo_comentario']);
     if ($nuevoComentario !== "") {
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nuevo_comentario']) &
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post_id'])) {
     $postId = new MongoDB\BSON\ObjectId($_POST['delete_post_id']);
-    // Solo permite borrar si el gmail coincide
     $post = $collection->findOne(['_id' => $postId]);
     if ($post && isset($post['usuario']['gmail']) && $usuario && $usuario['gmail'] === $post['usuario']['gmail']) {
         $collection->deleteOne(['_id' => $postId]);
@@ -39,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post_id'])) {
         exit();
     }
 }
-// Procesar like
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id']) && $usuario && $id) {
     $postId = $_POST['like_post_id'];
     $postObj = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($postId)]);
@@ -47,23 +43,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id']) && $u
     $yaLike = in_array($usuario['nombre'], $likesArray);
 
     if ($yaLike) {
-        // Quitar like
         $collection->updateOne(
             ['_id' => new MongoDB\BSON\ObjectId($postId)],
             ['$pull' => ['likes' => $usuario['nombre']]]
         );
     } else {
-        // Dar like
         $collection->updateOne(
             ['_id' => new MongoDB\BSON\ObjectId($postId)],
             ['$push' => ['likes' => $usuario['nombre']]]
         );
     }
-    // Mensaje opcional
+
     $msg = "<div class='pub-msg pub-success'>¡Gracias por tu reacción!</div>";
 }
 
-// Recargar post actualizado
 if ($id) {
     $post = $collection->findOne(['_id' => new MongoDB\BSON\ObjectId($id)]);
 }
@@ -195,7 +188,7 @@ if ($id) {
                 Tu navegador no soporta el video.
             </video>
         <?php endif; ?>
-        <!-- Likes -->
+
         <div class="pub-likes">
             <?php
                 $likesArray = isset($post['likes']) ? (array)$post['likes'] : [];
@@ -210,7 +203,7 @@ if ($id) {
             </form>
             <span><?= $numLikes ?></span>
         </div>
-        <!-- Comentarios -->
+
         <div class="pub-comments-title">Comentarios</div>
         <?php if (!empty($post['comentarios'])): ?>
             <?php foreach ($post['comentarios'] as $coment): ?>
@@ -225,7 +218,7 @@ if ($id) {
         <?php else: ?>
             <div class="text-muted">No hay comentarios aún.</div>
         <?php endif; ?>
-        <!-- Formulario para comentar -->
+
         <?php if ($usuario): ?>
             <form method="post" class="pub-comment-form">
                 <input type="text" name="nuevo_comentario" placeholder="Escribe un comentario..." maxlength="300" required>
