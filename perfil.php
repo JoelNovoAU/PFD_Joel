@@ -94,6 +94,7 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Special+Gothic+Expanded+One&display=swap"
     rel="stylesheet">
@@ -234,7 +235,7 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
   <?php endif; ?>
 </div>
     <!-- Reservas realizadas -->
-   <div class="tab-pane fade" id="reservas" role="tabpanel">
+ <div class="tab-pane fade" id="reservas" role="tabpanel">
   <h5>Mis reservas</h5>
   <?php if(count($misReservas)): ?>
     <ul class="list-group">
@@ -243,10 +244,10 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
           <span>
             <?= htmlspecialchars($r['fecha'] ?? '') ?> - <?= htmlspecialchars($r['hora'] ?? '') ?> - <?= htmlspecialchars($r['campo'] ?? '') ?>
           </span>
-          <form method="POST" class="m-0" onsubmit="return confirm('¿Seguro que quieres borrar esta reserva?');">
+          <form method="POST" class="m-0 borrar-reserva-form" data-id="<?= $r['_id'] ?>">
             <input type="hidden" name="borrar_reserva" value="1">
             <input type="hidden" name="id_reserva" value="<?= $r['_id'] ?>">
-            <button type="submit" class="btn btn-sm btn-danger">Borrar</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="abrirModal('<?= $r['_id'] ?>')">Cancelar</button>
           </form>
         </li>
       <?php endforeach; ?>
@@ -255,6 +256,44 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
     <div class="text-muted">No tienes reservas.</div>
   <?php endif; ?>
 </div>
+
+<div class="modal fade" id="modalConfirmacion" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Confirmar cancelación</h5>
+        
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas cancelar esta reserva?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarBorrar">Sí, cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let idReservaAEliminar = null;
+
+function abrirModal(idReserva) {
+  idReservaAEliminar = idReserva;
+  $('#modalConfirmacion').modal('show');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('btnConfirmarBorrar').addEventListener('click', function() {
+    if (idReservaAEliminar) {
+      const form = document.querySelector(`form.borrar-reserva-form[data-id="${idReservaAEliminar}"]`);
+      if (form) form.submit();
+      idReservaAEliminar = null;
+      $('#modalConfirmacion').modal('hide');
+    }
+  });
+});
+</script>
     <!-- Cambiar contraseña -->
     <div class="tab-pane fade" id="pass" role="tabpanel">
       <form method="POST" class="mb-3">
@@ -278,7 +317,9 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
     <div class="tab-pane fade" id="eliminar" role="tabpanel">
       <form method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');">
         <input type="hidden" name="eliminar_cuenta" value="1">
-        <button type="submit" class="btn btn-danger">Eliminar cuenta</button>
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarBorrarPerfil">
+    Borrar perfil
+</button>
       </form>
     </div>
   </div>
@@ -286,6 +327,26 @@ $misReservas = $reservas->find(['correo'=>$usuarioDB['gmail']])->toArray();
     <button type="submit" name="logout" class="btn btn-secondary">Cerrar sesión</button>
   </form>
 </div>
+<div class="modal fade" id="confirmarBorrarPerfil" tabindex="-1" aria-labelledby="confirmarBorrarPerfilLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header border-0">
+        <h5 class="modal-title w-100" id="confirmarBorrarPerfilLabel">¿Estás seguro?</h5>
+      </div>
+      <div class="modal-body">
+        <p class="fs-5">Esta acción eliminará tu perfil y todos tus datos.<br>¿Deseas continuar?</p>
+      </div>
+      <div class="modal-footer border-0 justify-content-center">
+        <form method="POST" action="borrar_perfil.php">
+          <button type="submit" class="btn btn-danger">Sí, borrar</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -9,7 +9,6 @@ use MongoDB\Client;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 
-// Conexión a MongoDB
 $uri = "mongodb+srv://joelnp:joel16@cluster0.qcsid.mongodb.net/?retryWrites=true&w=majority";
 $client = new Client($uri);
 $database = $client->selectDatabase('PFDJoel');
@@ -17,15 +16,16 @@ $collection = $database->selectCollection('reservas');
 $collectionCampos = $database->selectCollection('campos');
 $campos = $collectionCampos->find()->toArray();
 $campoSeleccionado = $_GET['campo'] ?? ($_POST['campo'] ?? '');
-// Fechas permitidas
+
 $hoy = new DateTime();
 $fechaLimite = clone $hoy;
 $fechaLimite->modify('+3 weeks');
 
-// Obtener horas ocupadas vía AJAX
-if (isset($_GET['getHoras'])) {
+// Cambiado: ahora getHoras recibe campo y fecha
+if (isset($_GET['getHoras']) && isset($_GET['campo'])) {
   $fecha = $_GET['getHoras'];
-  $reservas = $collection->find(['fecha' => $fecha]);
+  $campo = $_GET['campo'];
+  $reservas = $collection->find(['fecha' => $fecha, 'campo' => $campo]);
 
   $ocupadas = [];
   foreach ($reservas as $reserva) {
@@ -51,11 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   } else {
     $reservaExistente = $collection->findOne([
       'fecha' => $fecha,
-      'hora' => $hora
+      'hora' => $hora,
+      'campo' => $campo // Solo bloquea si es el mismo campo
     ]);
 
     if ($reservaExistente) {
-      echo "<p style='color:red;'>❌ Ya existe una reserva para el $fecha a las $hora.</p>";
+      echo "<p style='color:red;'>❌ Ya existe una reserva para el $fecha a las $hora en ese campo.</p>";
     } else {
       $reserva = [
         'nombre' => $nombre,
@@ -78,13 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $cupon .= $caracteres[rand(0, strlen($caracteres) - 1)];
         }
 
-        // Puedes guardar el cupón en la base de datos si lo deseas
-        // $database->selectCollection('cupones')->insertOne([
-        //     'correo' => $correo,
-        //     'cupon' => $cupon,
-        //     'fecha' => new MongoDB\BSON\UTCDateTime()
-        // ]);
-
         // Enviar correo con el cupón
         $mailCupon = new PHPMailer(true);
         try {
@@ -100,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $mailCupon->addAddress($correo);
 
           $mailCupon->isHTML(true);
-          $mailCupon->Subject = '¡Has conseguido un cupón de descuento!';
+          $mailCupon->Subject = 'Has conseguido un cupon de descuento';
           $mailCupon->Body = "
             <h3>¡Enhorabuena $nombre!</h3>
             <p>Por haber realizado 3 reservas, aquí tienes tu cupón de descuento:</p>
@@ -109,11 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ";
 
           $mailCupon->send();
-          echo "<div class='alert alert-success text-center mt-4'>
-                🎉 ¡Felicidades! Has conseguido un cupón de descuento: 
-                <strong style='font-size:1.3em;'>$cupon</strong><br>
-                <span>Te lo hemos enviado también a tu correo.</span>
-              </div>";
+         
         } catch (Exception $e) {
           echo "<div class='alert alert-danger text-center mt-4'>
                 ❌ Error al enviar el cupón: {$mailCupon->ErrorInfo}
@@ -134,7 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $qrDataUri);
       $pngData = base64_decode($base64);
       file_put_contents($qrTempPath, $pngData);
-
 
       // Enviar correo con PHPMailer
       $mail = new PHPMailer(true);
@@ -184,8 +173,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -341,17 +328,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </div>
 </div>
   <script>
-    document.getElementById('fecha').addEventListener('change', function () {
-      const fecha = this.value;
+    function cargarHoras() {
+      const fecha = document.getElementById('fecha').value;
+      const campo = document.getElementById('campo').value;
       const horaContainer = document.getElementById('hora-container');
       const horaInput = document.getElementById('hora');
 
-      horaInput.value = ''; // Reset selected hour
-      horaContainer.innerHTML = ''; // Clear existing buttons
+      horaInput.value = '';
+      horaContainer.innerHTML = '';
 
-      if (!fecha) return;
+      if (!fecha || !campo) return;
 
-      fetch(`reservar.php?getHoras=${fecha}`)
+      fetch(`reservar.php?getHoras=${fecha}&campo=${encodeURIComponent(campo)}`)
         .then(response => response.json())
         .then(horasOcupadas => {
           const todasHoras = [
@@ -363,7 +351,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           const horasLibres = todasHoras.filter(h => !horasOcupadas.includes(h));
 
           if (horasLibres.length === 0) {
-            horaContainer.innerHTML = '<p class="text-danger">No hay horas disponibles para esta fecha</p>';
+            horaContainer.innerHTML = '<p class="text-danger">No hay horas disponibles para esta fecha y campo</p>';
           } else {
             horasLibres.forEach(hora => {
               const btn = document.createElement('button');
@@ -385,8 +373,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           console.error('Error al cargar horas:', error);
           horaContainer.innerHTML = '<p class="text-danger">Error al cargar horas</p>';
         });
-    });
+    }
 
+    document.getElementById('fecha').addEventListener('change', cargarHoras);
+    document.getElementById('campo').addEventListener('change', cargarHoras);
+
+    // Si ya hay valores seleccionados al cargar la página, carga las horas
+    window.addEventListener('DOMContentLoaded', function() {
+      if (document.getElementById('fecha').value && document.getElementById('campo').value) {
+        cargarHoras();
+      }
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>

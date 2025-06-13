@@ -28,7 +28,7 @@ try {
     exit;
 }
 
-// Paso 1: Preguntar número de jugadores y nombres
+
 if (!isset($_POST['num_jugadores']) && !isset($_POST['jugadores'])):
 ?>
 <!DOCTYPE html>
@@ -57,7 +57,7 @@ if (!isset($_POST['num_jugadores']) && !isset($_POST['jugadores'])):
 </script>
 <?php endif; ?>
 <?php
-// Paso 2: Pedir nombres de los jugadores
+
 elseif (isset($_POST['num_jugadores']) && !isset($_POST['jugadores'])):
     $num = intval($_POST['num_jugadores']);
 ?>
